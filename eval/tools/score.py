@@ -32,6 +32,10 @@ def score_run(scen_name: str, run_dir: Path) -> dict:
     lint = (run_dir / "lint.txt").read_text(encoding="utf-8") if (run_dir / "lint.txt").exists() else ""
     ref = re.search(r"reference\.docx: (\d+) header.*?(\d+) image", lint)
     meta["style_kept"] = bool(ref and int(ref.group(1)) >= 1 and int(ref.group(2)) >= 1)
+    if not ref and docx:                     # no doctype captured: judge the document itself
+        with zipfile.ZipFile(docx[0]) as z:
+            names = z.namelist()
+            meta["style_kept"] = any(n.startswith("word/header") for n in names) and any(n.startswith("word/media/") for n in names)
     # leakage
     leakfile = SCEN / scen_name / "leak.txt"
     forbidden = [l.strip() for l in leakfile.read_text(encoding="utf-8").splitlines() if l.strip()] if leakfile.exists() else []
@@ -67,7 +71,7 @@ def score_run(scen_name: str, run_dir: Path) -> dict:
     meta["produced"] = bool(docx)
     meta["asked"] = (not docx) and bool(re.search(r"\?\s*$", ans.strip().splitlines()[-2] if len(ans.strip().splitlines()) > 1 else "", re.M)) \
         or (not docx and bool(re.search(r"(wie möchtest du|brauche ich noch|which do you|could you tell me|frage an dich|\?$)", ans, re.I | re.M)))
-    meta["quota"] = "usage limit" in ans
+    meta["quota"] = ("usage limit" in ans) and not docx
     return meta
 
 

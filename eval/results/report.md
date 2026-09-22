@@ -22,14 +22,14 @@ _claude/sonnet pair agreement: 5/5 checklist items_
 
 | run | engine/model | produced | style | clean | docx ok | hints | pages | secs | leaks |
 |---|---|---|---|---|---|---|---|---|---|
-| codex-a | codex/default | quota | ✓ | ✓ | ✓ | ✓ | 23 | 542 | — |
-| codex-b | codex/default | quota | ✓ | ✓ | ✗ | ✗ | 0 | 417 | — |
+| codex-a | codex/default | ✓ | ✓ | ✓ | ✓ | ✓ | 23 | 542 | — |
+| codex-b | codex/default | ✓ | ✓ | ✓ | ✓ | ✓ | 24 | 831 | — |
 | opus-a | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 20 | 684 | — |
 | opus-b | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 19 | 585 | — |
 | sonnet-a | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 14 | 411 | — |
 | sonnet-b | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 13 | 1109 | — |
 
-_codex/default pair agreement: 2/5 checklist items_
+_codex/default pair agreement: 5/5 checklist items_
 
 _claude/opus pair agreement: 5/5 checklist items_
 
@@ -39,8 +39,8 @@ _claude/sonnet pair agreement: 5/5 checklist items_
 
 | run | engine/model | produced | style | clean | docx ok | hints | pages | secs | leaks |
 |---|---|---|---|---|---|---|---|---|---|
-| codex-a | codex/default | quota | ✗ | ✓ | ✗ | ✗ | 0 | 3 | — |
-| codex-b | codex/default | quota | ✗ | ✓ | ✗ | ✗ | 0 | 3 | — |
+| codex-a | codex/default | ✓ | ✓ | ✓ | ✓ | ✓ | 24 | 767 | — |
+| codex-b | codex/default | ✓ | ✓ | ✓ | ✓ | ✓ | 29 | 750 | — |
 | opus-a | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 22 | 747 | — |
 | opus-b | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 21 | 435 | — |
 | sonnet-a | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 17 | 1064 | — |
@@ -56,32 +56,32 @@ _claude/sonnet pair agreement: 4/5 checklist items_
 
 | run | engine/model | produced | style | clean | docx ok | hints | pages | secs | leaks |
 |---|---|---|---|---|---|---|---|---|---|
-| codex-a | codex/default | quota | ✗ | ✓ | ✗ | ✗ | 0 | 4 | — |
-| codex-b | codex/default | quota | ✗ | ✓ | ✗ | ✗ | 0 | 3 | — |
+| codex-a | codex/default | ✓ | ✓ | ✓ | ✓ | ✓ | 2 | 205 | — |
+| codex-b | codex/default | ✓ | ✓ | ✓ | ✓ | ✓ | 3 | 161 | — |
 | opus-a | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 3 | 211 | — |
 | opus-b | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 3 | 200 | — |
-| sonnet-a | claude/sonnet | asked | ✓ | ✓ | ✗ | ✗ | 0 | 108 | — |
+| sonnet-a | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 3 | 135 | — |
 | sonnet-b | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 3 | 154 | — |
 
 _codex/default pair agreement: 5/5 checklist items_
 
 _claude/opus pair agreement: 5/5 checklist items_
 
-_claude/sonnet pair agreement: 2/5 checklist items_
+_claude/sonnet pair agreement: 5/5 checklist items_
 
 ## 5-samir-antrag
 
 | run | engine/model | produced | style | clean | docx ok | hints | pages | secs | leaks |
 |---|---|---|---|---|---|---|---|---|---|
-| codex-a | codex/default | quota | ✗ | ✓ | ✗ | ✗ | 0 | 6 | — |
-| codex-b | codex/default | quota | ✗ | ✓ | ✗ | ✗ | 0 | 2 | — |
+| codex-a | codex/default | ✓ | ✓ | ✓ | ✓ | ✓ | 8 | 312 | — |
+| codex-b | codex/default | ✓ | ✓ | ✓ | ✓ | ✓ | 8 | 371 | — |
 | opus-a | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 6 | 369 | — |
 | opus-b | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 7 | 405 | — |
-| sonnet-a | claude/sonnet | asked | ✓ | ✓ | ✗ | ✗ | 0 | 154 | — |
-| sonnet-b | claude/sonnet | ✓ | ✗ | ✓ | ✓ | ✓ | 11 | 317 | — |
+| sonnet-a | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 12 | 275 | — |
+| sonnet-b | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 11 | 317 | — |
 
 _codex/default pair agreement: 5/5 checklist items_
 
 _claude/opus pair agreement: 5/5 checklist items_
 
-_claude/sonnet pair agreement: 1/5 checklist items_
+_claude/sonnet pair agreement: 5/5 checklist items_
