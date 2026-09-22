@@ -201,7 +201,7 @@ def cmd_types_lint(a):
 
 def cmd_types_from_docx(a):
     dest = Path(a.dest).resolve() if a.dest else dt.HOME_TYPES
-    path, ol = fromdocx.create(Path(a.docx).resolve(), dest, name=a.name, lang=a.lang)
+    path, ol = fromdocx.create(Path(a.docx).resolve(), dest, name=a.name, lang=a.lang, style_only=a.style_only)
     print(f"✔ {path}")
     print(f"  {len(ol.sections)} sections from the heading outline, "
           f"{sum(len(s['hints']) for s in ol.sections)} hints from placeholder text")
@@ -257,6 +257,7 @@ def main(argv=None):
     s = t.add_parser("from-docx", help="create a doctype from a Word file you like")
     s.add_argument("docx"); s.add_argument("--name"); s.add_argument("--dest", help="parent folder (default ~/.dokdok/doctypes)")
     s.add_argument("--lang", default="de-CH")
+    s.add_argument("--style-only", action="store_true", help="keep the look, ignore the file's content (for filled examples)")
     s.set_defaults(fn=cmd_types_from_docx)
 
     a = ap.parse_args(argv)

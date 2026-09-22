@@ -73,7 +73,7 @@ Inside a section, audience-specific blocks:
 ## Making one
 
 - From scratch: copy the closest bundled doctype, edit the yaml, restyle `reference.docx` in Word.
-- From a Word file you like: `dokdok types from-docx file.docx` — keeps its styles/header/footer,
+- From a Word file you like: `dokdok types from-docx file.docx` (add `--style-only` when the file is a filled example, not a blank template) — keeps its styles/header/footer,
   turns the heading outline into sections and placeholder text into hints.
 - Check it: `dokdok types lint <folder>`, then `dokdok new smoke --type <folder> && cd smoke && dokdok render`.
 - Share it: any git repo or folder; users run `dokdok add <folder-or-git-url>`.

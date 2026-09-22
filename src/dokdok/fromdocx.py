@@ -118,7 +118,7 @@ def hollow(src: Path, dst: Path) -> None:
             zout.writestr(item, data)
 
 
-def create(docx: Path, dest: Path, name: str | None = None, lang: str = "de-CH") -> tuple[Path, Outline]:
+def create(docx: Path, dest: Path, name: str | None = None, lang: str = "de-CH", style_only: bool = False) -> tuple[Path, Outline]:
     name = name or slug(docx.stem)
     dest = dest / name
     if dest.exists():
@@ -126,6 +126,9 @@ def create(docx: Path, dest: Path, name: str | None = None, lang: str = "de-CH")
     (dest / "sections").mkdir(parents=True)
     hollow(docx, dest / "reference.docx")
     ol = outline(docx)
+    if style_only:                      # a filled example: keep the look, drop its content entirely
+        ol.sections = []
+        ol.notes.append("style only: sections/hints not taken from this file — build them from the guideline and the person's concept")
     sections = []
     for s in ol.sections:
         d = {"id": s["id"], "title": s["title"], "required": True}

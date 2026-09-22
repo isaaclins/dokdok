@@ -141,7 +141,7 @@ targets:
   blue-team: { format: docx, audience: blue-team }
   web:       { format: html }</code></pre>
   <h3>From a Word file you like</h3>
-  <pre><code>dokdok types from-docx template.docx --name my-school</code></pre>
+  <pre><code>dokdok types from-docx example.docx --name my-school --style-only</code></pre>
   <p>Keeps styles, numbering, header/footer and logo (the body is emptied into <code>reference.docx</code>), turns the heading outline into sections and grey or bracketed placeholder text into hints, and tells you what it couldn't carry over (body tables, images, text boxes). Then edit <code>doctype.yaml</code>, run <code>dokdok types lint</code>, and render a skeleton to compare with the original.</p>
   <p>Fonts, heading styles, colours, numbering, header/footer, margins and page numbers round-trip. Free-form layouts (text boxes, magazine-style covers) don't — keep those as a static <code>cover.docx</code>.</p>
 </section>

@@ -25,11 +25,19 @@ of files (guideline PDFs, a Word template, grading grid, their concept).
 1. **Read everything they gave you first.** PDFs: `pdftotext file.pdf -` (or your PDF reader).
    Word files: `pandoc file.docx -t plain`. Note: required chapters and order, word counts,
    citation format, mandatory declarations, grading points, deadlines, formatting rules.
-2. **Is there a Word file from the school/company?** (template, sample, "Vorlage", or even a
-   filled example.) Then the style comes from it — never build the look by hand:
-   `dokdok types from-docx <file.docx> --name <school-or-course>` keeps its fonts, heading
-   styles, numbering, header, footer and logo, and turns its outline into sections. Read the
+2. **Is there a Word file that shows how it should look?** It can be anything: the school's
+   blank template, a teacher's example, a friend's finished thesis, last year's winner. The
+   person can't format Word themselves — that file *is* the look. Never build the look by hand:
+   `dokdok types from-docx <file.docx> --name <school-or-course> --style-only` keeps its fonts,
+   heading styles, numbering, header, footer and logo and throws the body away. Read the
    command's report: it tells you what it could not carry over.
+   **Take only the look from that file, never its content.** Someone else's chapter titles,
+   names, dates, sources, interview answers or AI-log rows do not belong in this person's
+   document — an example full of another person's text is normal, not suspicious. The chapter
+   structure comes from the guideline and from the person's own concept; use the example only
+   to see how a finished one is organised (how many levels, where the appendix goes).
+   Without `--style-only`, from-docx also turns the file's outline into sections — use that
+   only for a genuinely blank template.
    No Word file? Start from the closest bundled doctype (`dokdok types list`) and copy it.
    If you must change styles inside `reference.docx` (font sizes, colours), do it the way
    `doctypes/*/make-reference.py` does — Python `zipfile`, rewriting `word/styles.xml` — and

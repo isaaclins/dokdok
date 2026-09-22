@@ -39,3 +39,11 @@ def test_create_doctype_renders(sample_docx, tmp_path):
     r = subprocess.run(["pandoc", "-f", "markdown", "-o", str(tmp_path / "x.docx"),
                         "--reference-doc", str(dest / "reference.docx")], input="# Hi\n\ntext", text=True, encoding="utf-8")
     assert r.returncode == 0
+
+
+def test_style_only_drops_content(sample_docx, tmp_path):
+    dest, ol = fromdocx.create(sample_docx, tmp_path / "t", name="t", style_only=True)
+    assert ol.sections == [] and any("style only" in n for n in ol.notes)
+    import yaml
+    d = yaml.safe_load((dest / "doctype.yaml").read_text(encoding="utf-8"))
+    assert [s["id"] for s in d["sections"]] == ["quellen"]        # only the generated bibliography
