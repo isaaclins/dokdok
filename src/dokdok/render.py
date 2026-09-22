@@ -107,10 +107,32 @@ def render(p: Project, target: str = "default", pdf: bool = False) -> list[Path]
     for lua in sorted((p.doctype.path / "filters").glob("*.lua")):
         cmd += ["--lua-filter", str(lua)]
     subprocess.run(cmd, input=md, text=True, encoding="utf-8", check=True)
+    if fmt == "docx":
+        sanitize_docx(out)
     outs = [out]
     if pdf and fmt == "docx":
         outs.append(docx_to_pdf(out))
     return outs
+
+
+def sanitize_docx(path: Path) -> None:
+    """Drop zip directory entries and their content-type Overrides. A reference.docx re-zipped by
+    hand (`zip -r`) carries `word/media/` as an entry; pandoc copies it and Word then refuses the
+    file with "unreadable content"."""
+    import re
+    import zipfile
+    with zipfile.ZipFile(path) as z:
+        items = z.infolist()
+        if not any(i.filename.endswith("/") for i in items):
+            return
+        parts = [(i, z.read(i.filename)) for i in items if not i.filename.endswith("/")]
+    tmp = path.with_suffix(".docx.tmp")
+    with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as out:
+        for info, data in parts:
+            if info.filename == "[Content_Types].xml":
+                data = re.sub(rb'<Override PartName="/[^"]*/"[^>]*/>\s*', b"", data)
+            out.writestr(info, data)
+    tmp.replace(path)
 
 
 LO_PROFILE = Path(tempfile.gettempdir()) / "dokdok-lo"

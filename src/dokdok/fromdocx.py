@@ -107,6 +107,8 @@ def hollow(src: Path, dst: Path) -> None:
     Done as byte surgery so namespace prefixes and everything else stay exactly as Word wrote them."""
     with zipfile.ZipFile(src) as zin, zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED) as zout:
         for item in zin.infolist():
+            if item.filename.endswith("/"):        # directory entries are not OPC parts; Word rejects them
+                continue
             data = zin.read(item.filename)
             if item.filename == "word/document.xml":
                 head, _, rest = data.partition(b"<w:body>")

@@ -97,3 +97,22 @@ def test_render_pdf_has_toc(project):
     if shutil.which("pdftotext"):
         txt = subprocess.run(["pdftotext", str(pdf), "-"], capture_output=True, text=True, encoding="utf-8").stdout
         assert "Table of Contents" in txt and "1.1 Topic" in txt   # TOC entries were generated
+
+
+def test_render_sanitizes_directory_entries(tmp_path):
+    """A hand-rezipped reference.docx carries `word/media/`; the output must not, or Word refuses it."""
+    import zipfile
+    dt = tmp_path / "dt"; shutil.copytree(DOCTYPE, dt)
+    ref = dt / "reference.docx"; src = zipfile.ZipFile(ref); items = [(i, src.read(i.filename)) for i in src.infolist()]
+    with zipfile.ZipFile(ref, "w", zipfile.ZIP_DEFLATED) as z:
+        for i, data in items:
+            if i.filename == "[Content_Types].xml":
+                data = data.replace(b"</Types>", b'<Override PartName="/word/media/" ContentType="image/png"/></Types>')
+            z.writestr(i, data)
+        z.writestr("word/media/", b"")
+    assert "directory entries" in dokdok("types", "lint", str(dt), cwd=tmp_path).stdout
+    assert dokdok("new", "p", "--type", str(dt), cwd=tmp_path).returncode == 0
+    assert dokdok("render", cwd=tmp_path / "p").returncode == 0
+    with zipfile.ZipFile(tmp_path / "p" / "out" / "p.docx") as z:
+        assert not any(n.endswith("/") for n in z.namelist())
+        assert b'PartName="/word/media/"' not in z.read("[Content_Types].xml")

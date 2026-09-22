@@ -161,6 +161,9 @@ def cmd_types_lint(a):
         import zipfile, re as _re
         with zipfile.ZipFile(d.reference_docx) as z:
             names = z.namelist()
+            if any(n.endswith("/") for n in names):
+                probs.append("reference.docx contains zip directory entries (re-zipped by hand?) — "
+                             "dokdok strips them on render, but rebuild it with `dokdok types from-docx` to be safe")
             hdr = sum(n.startswith("word/header") and n.endswith(".xml") for n in names)
             ftr = sum(n.startswith("word/footer") and n.endswith(".xml") for n in names)
             imgs = sum(n.startswith("word/media/") for n in names)
