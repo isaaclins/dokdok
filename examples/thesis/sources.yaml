@@ -1,15 +1,14 @@
 references:
-  - id: suva2024
+  - id: survey2025
     type: report
-    title: Unfallstatistik UVG 2024
-    author: [{ literal: Suva }]
+    title: National honey bee colony loss survey 2024/25
+    author: [{ literal: Beekeepers' Association }]
+    issued: { year: 2025 }
+    URL: https://example.org/colony-loss-2025
+    accessed: { year: 2026, month: 9, day: 21 }
+  - id: beeguide2024
+    type: book
+    title: The Urban Beekeeper's Handbook
+    author: [{ family: Example, given: Maria }]
     issued: { year: 2024 }
-    URL: https://www.suva.ch/statistik
-    accessed: { year: 2026, month: 9, day: 21 }
-  - id: fifa11plus
-    type: webpage
-    title: "FIFA 11+: Ein komplettes Aufwärmprogramm zur Verletzungsprävention"
-    author: [{ literal: FIFA Medical Network }]
-    issued: { year: 2023 }
-    URL: https://www.fifamedicalnetwork.com/11plus
-    accessed: { year: 2026, month: 9, day: 21 }
+    publisher: Example Press

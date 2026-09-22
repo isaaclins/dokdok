@@ -8,6 +8,7 @@ import pytest
 
 REPO = Path(__file__).resolve().parents[1]
 DOCTYPE = REPO / "doctypes" / "school-thesis"
+DOCTYPE_DE = REPO / "doctypes" / "school-thesis-de"
 pytestmark = pytest.mark.skipif(not shutil.which("pandoc"), reason="pandoc not installed")
 
 
@@ -24,18 +25,27 @@ def project(tmp_path):
 
 def test_new_creates_skeleton(project):
     names = sorted(p.name for p in (project / "doc").iterdir())
-    assert names == ["01-einleitung.md", "02-hauptteil.md", "03-schlusswort.md", "05-anhang.md"]
-    assert "dokdok:hint" in (project / "doc" / "01-einleitung.md").read_text()
+    assert names == ["01-introduction.md", "02-main-part.md", "03-conclusion.md", "05-appendix.md"]
+    assert "dokdok:hint" in (project / "doc" / "01-introduction.md").read_text()
     assert "dokdok check" in (project / "AGENTS.md").read_text()
 
 
 def test_check_finds_errors(project):
-    (project / "doc" / "02-hauptteil.md").write_text(
-        "---\nsection: hauptteil\n---\n\n## X\n\nDie Straße [@fehlt]. ![](a.png)\n")
+    (project / "doc" / "02-main-part.md").write_text(
+        "---\nsection: main-part\n---\n\n## X\n\nText [@missing]. ![](a.png)\n")
     r = dokdok("check", cwd=project)
     assert r.returncode == 1
-    for msg in ("contains ß", "has no caption", "[@fehlt] cited but not in sources.yaml"):
+    for msg in ("has no caption", "[@missing] cited but not in sources.yaml"):
         assert msg in r.stdout
+
+
+def test_german_doctype_flags_eszett_and_localises_toc(tmp_path):
+    assert dokdok("new", "de", "--type", str(DOCTYPE_DE), cwd=tmp_path).returncode == 0
+    p = tmp_path / "de"
+    (p / "doc" / "02-hauptteil.md").write_text("---\nsection: hauptteil\n---\n\n## X\n\nDie Straße.\n")
+    assert "contains ß" in dokdok("check", cwd=p).stdout
+    from dokdok import project as prj, render
+    assert "toc-title: 'Inhaltsverzeichnis'" in render.assemble(prj.load(p))
 
 
 def test_check_final_flags_placeholders_and_hints(project):
@@ -46,17 +56,17 @@ def test_check_final_flags_placeholders_and_hints(project):
 
 
 def test_render_docx(project):
-    (project / "doc" / "02-hauptteil.md").write_text(
-        "---\nsection: hauptteil\n---\n\n## Kapitel\n\nText mit Quelle [@q1].\n")
+    (project / "doc" / "02-main-part.md").write_text(
+        "---\nsection: main-part\n---\n\n## Chapter\n\nText with a source [@q1].\n")
     (project / "sources.yaml").write_text(
-        "references:\n  - id: q1\n    type: book\n    title: Ein Buch\n    issued: {year: 2020}\n")
+        "references:\n  - id: q1\n    type: book\n    title: A Book\n    issued: {year: 2020}\n")
     r = dokdok("render", cwd=project)
     assert r.returncode == 0, r.stderr
     docx = project / "out" / "thesis.docx"
     assert docx.exists() and docx.stat().st_size > 5000
     md = (project / "out" / "thesis.md").read_text()
     assert "dokdok:hint" not in md
-    assert "# Quellenverzeichnis" in md
+    assert "# References" in md
 
 
 def test_audience_target(tmp_path):
@@ -66,18 +76,13 @@ def test_audience_target(tmp_path):
     assert "fix it" not in md and "summary" in md
 
 
-def test_toc_title_follows_lang(project):
-    from dokdok import project as prj, render
-    md = render.assemble(prj.load(project))
-    assert "toc-title: 'Inhaltsverzeichnis'" in md
-
 
 def test_ai_log_renders(project):
-    r = dokdok("log", "--tool", "Claude Code", "Einleitung aus Konzept", "--outcome", "gegengelesen", cwd=project)
+    r = dokdok("log", "--tool", "Claude Code", "Drafted the introduction", "--outcome", "reviewed", cwd=project)
     assert r.returncode == 0, r.stderr
     from dokdok import project as prj, render
     md = render.assemble(prj.load(project))
-    assert "# KI-Protokoll" in md and "| Claude Code | Einleitung aus Konzept | gegengelesen |" in md
+    assert "# AI usage log" in md and "| Claude Code | Drafted the introduction | reviewed |" in md
 
 
 @pytest.mark.skipif(not (shutil.which("soffice") or Path("/Applications/LibreOffice.app").exists()), reason="LibreOffice not installed")
@@ -88,4 +93,4 @@ def test_render_pdf_has_toc(project):
     assert pdf.exists() and pdf.stat().st_size > 10_000
     if shutil.which("pdftotext"):
         txt = subprocess.run(["pdftotext", str(pdf), "-"], capture_output=True, text=True).stdout
-        assert "Inhaltsverzeichnis" in txt and "1.1 Themenwahl" in txt   # TOC entries were generated
+        assert "Table of Contents" in txt and "1.1 Topic" in txt   # TOC entries were generated

@@ -1,41 +1,39 @@
-# Example doctype: a vocational-school thesis (fictional guideline).
+# Example doctype: a vocational-school thesis (fictional guideline), English.
 name: school-thesis
 title: School thesis (example)
-lang: de-CH
-spelling:
-  no_eszett: true
+lang: en
 
 sections:
-  - id: einleitung
-    title: Einleitung
+  - id: introduction
+    title: Introduction
     required: true
     words: { min: 300, max: 450 }
-    subsections: [Themenwahl und persönlicher Bezug, Ziel und Fragestellungen, Vorgehen und Methoden]
+    subsections: [Topic and personal motivation, Aim and research questions, Approach and methods]
     hint: |
-      Ganz am Schluss fertig schreiben. Bewertet: persönlicher Bezug, klar formulierte
-      Fragestellung, mindestens zwei Methoden. 300–450 Wörter.
-  - id: hauptteil
-    title: Hauptteil
+      Finish this last. Graded on: personal motivation, clearly stated research questions,
+      at least two methods. 300–450 words.
+  - id: main-part
+    title: Main part
     required: true
     words: { min: 2000 }
     hint: |
-      Ein Unterkapitel (##) pro Fragestellung. Jede Aussage aus der Recherche braucht einen
-      Quellenverweis [@id]. Wörtliche Zitate in «…», maximal ein Sechstel der Arbeit.
-  - id: schlusswort
-    title: Schlusswort
+      One ## per research question. Every claim from research needs a citation [@id].
+      Direct quotes in “quotation marks”, at most one sixth of the text.
+  - id: conclusion
+    title: Conclusion
     required: true
-    subsections: [Beantwortung der Fragestellungen, Persönliches Fazit]
-    hint: Jede Fragestellung in wenigen Sätzen beantworten, dann ein persönliches Fazit.
-  - id: quellen
-    title: Quellenverzeichnis
+    subsections: [Answers to the research questions, Personal reflection]
+    hint: Answer each research question in a few sentences, then reflect on what you learned.
+  - id: references
+    title: References
     generated: sources
-  - id: anhang
-    title: Anhang
+  - id: appendix
+    title: Appendix
     required: true
-    subsections: [Eigenständigkeitserklärung]
-    hint: Pflicht laut Leitfaden. Bei fehlender Erklärung gibt es Punktabzug.
-  - id: ki-protokoll
-    title: KI-Protokoll
+    subsections: [Declaration of authorship]
+    hint: Required by the guideline. Missing declaration costs points.
+  - id: ai-log
+    title: AI usage log
     generated: ai-log
 
 checks:
