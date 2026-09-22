@@ -1,0 +1,17 @@
+FILE: Umfrage_Rohdaten.csv
+respondent_id,age,uses_selfcheckout,main_reason,frustration,store
+R001,24,yes,faster no queue,item not scanning,Coop
+R002,57,no,prefer human contact,none,Migros
+R003,31,yes,avoid small talk,unexpected item in bagging area,Coop
+R004,45,sometimes,depends on queue length,weighing produce is confusing,Migros
+R005,19,yes,its quicker,age check needs staff anyway,Coop
+R006,63,no,dont trust the machine,none,Coop
+R007,28,yes,control over bagging,random weight check,Denner
+R008,38,sometimes,fewer items go faster,card reader slow,Migros
+R009,22,yes,i can go at my own pace,barcode wont scan,Coop
+R010,50,no,feel like unpaid cashier,none,Migros
+R011,34,yes,no waiting,alcohol needs approval,Coop
+R012,41,sometimes,quick when not busy,too few machines open,Denner
+R013,67,no,eyesight touchscreen hard,none,Migros
+R014,26,yes,privacy for my purchases,scale error keeps beeping,Coop
+R015,48,sometimes,use app self scan instead,system froze mid checkout,Migros

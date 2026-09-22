@@ -1,0 +1,123 @@
+FILE: git-log.txt
+
+commit 4f2a1c9e8b7d6a5f4e3c2b1a0d9e8f7c6b5a4d3e
+Author: Mara Keller <m.keller@nordlicht-logistik.ch>
+Date:   Mon Apr 20 09:14:02 2026 +0200
+
+    chore: init project structure and gitignore
+
+ .gitignore        |  4 ++++
+ README.md         |  9 +++++++++
+ package.json      | 12 ++++++++++++
+ 3 files changed, 25 insertions(+)
+
+commit 5a3b2d0f9c8e7b6a5f4d3c2b1a0e9f8d7c6b5a4e
+Author: Mara Keller <m.keller@nordlicht-logistik.ch>
+Date:   Mon Apr 20 15:47:33 2026 +0200
+
+    test: add first failing test for csv parser
+
+ test/fixtures/stock-min.csv |  3 +++
+ test/parse.bats             | 11 +++++++++++
+ 2 files changed, 14 insertions(+)
+
+commit 6b4c3e1a0d9f8c7b6a5e4d3c2b1a0f9e8d7c6b5f
+Author: Mara Keller <m.keller@nordlicht-logistik.ch>
+Date:   Tue Apr 21 10:22:15 2026 +0200
+
+    feat: parse semicolon stock csv into records
+
+ src/parse-csv.js | 34 ++++++++++++++++++++++++++++++++++
+ test/parse.bats  | 18 +++++++++++++++---
+ 2 files changed, 49 insertions(+), 3 deletions(-)
+
+commit 7c5d4f2b1e0a9d8c7b6a5f4e3d2c1b0a9f8e7d6a
+Author: Mara Keller <m.keller@nordlicht-logistik.ch>
+Date:   Tue Apr 21 14:05:41 2026 +0200
+
+    test: add cases for empty quantity column
+
+ test/fixtures/stock-empty-qty.csv |  4 ++++
+ test/parse.bats                   | 14 ++++++++++++++
+ 2 files changed, 18 insertions(+)
+
+commit 8d6e5a3c2f1b0e9d8c7b6a5f4e3d2c1b0a9f8e7b
+Author: Mara Keller <m.keller@nordlicht-logistik.ch>
+Date:   Wed Apr 22 09:38:20 2026 +0200
+
+    fix: skip rows with missing quantity and warn
+
+ src/parse-csv.js | 12 +++++++++---
+ test/parse.bats  |  9 +++++++++
+ 2 files changed, 18 insertions(+), 3 deletions(-)
+
+commit 9e7f6b4d3a2c1f0e9d8c7b6a5f4e3d2c1b0a9f8c
+Author: Mara Keller <m.keller@nordlicht-logistik.ch>
+Date:   Wed Apr 22 16:11:57 2026 +0200
+
+    feat: add location parser for gang-regal-ebene format
+
+ src/location.js      | 27 +++++++++++++++++++++++++++
+ test/location.bats   | 22 ++++++++++++++++++++++
+ 2 files changed, 49 insertions(+)
+
+commit a0f8c5e4b3d2a1f0e9d8c7b6a5f4e3d2c1b0a9fd
+Author: Mara Keller <m.keller@nordlicht-logistik.ch>
+Date:   Thu Apr 23 10:47:09 2026 +0200
+
+    feat: sort picklist by warehouse location
+
+ src/sort-picklist.js    | 19 +++++++++++++++++++
+ test/sort.bats          | 26 ++++++++++++++++++++++++++
+ 2 files changed, 45 insertions(+)
+
+commit b1a9d6f5c4e3b2a1f0e9d8c7b6a5f4e3d2c1b0ae
+Author: Mara Keller <m.keller@nordlicht-logistik.ch>
+Date:   Thu Apr 23 15:29:44 2026 +0200
+
+    feat: append articles without location at end of list
+
+ src/sort-picklist.js |  9 +++++++--
+ test/sort.bats       | 13 +++++++++++++
+ 2 files changed, 20 insertions(+), 2 deletions(-)
+
+commit c2b0e7a6d5f4c3b2a1f0e9d8c7b6a5f4e3d2c1bf
+Author: Mara Keller <m.keller@nordlicht-logistik.ch>
+Date:   Fri Apr 24 09:52:31 2026 +0200
+
+    feat: aggregate duplicate article numbers into one line
+
+ src/aggregate.js     | 21 +++++++++++++++++++++
+ test/aggregate.bats  | 19 +++++++++++++++++++
+ src/sort-picklist.js |  6 +++++-
+ 3 files changed, 45 insertions(+), 1 deletion(-)
+
+commit d3c1f8b7e6a5d4c3b2a1f0e9d8c7b6a5f4e3d2ca
+Author: Mara Keller <m.keller@nordlicht-logistik.ch>
+Date:   Fri Apr 24 14:18:06 2026 +0200
+
+    feat: cli entrypoint with --in and --out options
+
+ bin/picklist.js | 41 +++++++++++++++++++++++++++++++++++++++++
+ README.md       | 18 ++++++++++++++++--
+ test/cli.bats   | 24 ++++++++++++++++++++++++
+ 3 files changed, 81 insertions(+), 2 deletions(-)
+
+commit e4d2a9c8f7b6e5d4c3b2a1f0e9d8c7b6a5f4e3db
+Author: Mara Keller <m.keller@nordlicht-logistik.ch>
+Date:   Mon Apr 27 10:33:48 2026 +0200
+
+    fix: handle invalid location code gracefully
+
+ src/location.js    |  8 ++++++--
+ test/location.bats | 11 +++++++++++
+ 2 files changed, 17 insertions(+), 2 deletions(-)
+
+commit f5e3b0d9a8c7f6e5d4c3b2a1f0e9d8c7b6a5f4ec
+Author: Mara Keller <m.keller@nordlicht-logistik.ch>
+Date:   Mon Apr 27 16:02:19 2026 +0200
+
+    docs: complete readme with usage examples and test instructions
+
+ README.md | 37 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 33 insertions(+), 4 deletions(-)

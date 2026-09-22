@@ -36,6 +36,15 @@ def build(scenario: Path):
             if head.startswith("FILE:"):
                 name = head.split(":", 1)[1].strip(); body = f.read_text(encoding="utf-8").split("\n", 1)[1]
                 (dump / name).write_text(body, encoding="utf-8"); print("file", name)
+    for f in src.glob("*"):
+        if f.suffix in (".csv", ".txt"):
+            head = f.read_text(encoding="utf-8", errors="replace").splitlines()[:1]
+            if head and head[0].startswith("FILE:"):
+                name = head[0].split(":", 1)[1].strip()
+                (dump / name).write_text(f.read_text(encoding="utf-8").split("\n", 1)[1], encoding="utf-8")
+            else:
+                import shutil as _sh; _sh.copy(f, dump / f.name)
+            print("file", f.name)
     plain = src / "plain"
     if plain.exists():
         for f in plain.iterdir():

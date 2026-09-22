@@ -1,0 +1,8 @@
+Timo Frei
+T. Frei
+Barcode
+Barcode-Scanner
+Honeywell
+Voyager
+NoLoWMS
+Spring Boot
