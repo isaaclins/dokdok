@@ -21,7 +21,7 @@ sections:
     words: { min: 2000 }
     hint: |
       Ein Unterkapitel (##) pro Fragestellung. Jede Aussage aus der Recherche braucht einen
-      Quellenverweis [@id]. Wörtliche Zitate in «…», maximal ein Sechstel der Arbeit.
+      Quellenverweis `[@id]`. Wörtliche Zitate in «…», maximal ein Sechstel der Arbeit.
   - id: schlusswort
     title: Schlusswort
     required: true

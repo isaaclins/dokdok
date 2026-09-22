@@ -18,7 +18,7 @@ sections:
     required: true
     words: { min: 2000 }
     hint: |
-      One ## per research question. Every claim from research needs a citation [@id].
+      One ## per research question. Every claim from research needs a citation `[@id]`.
       Direct quotes in “quotation marks”, at most one sixth of the text.
   - id: conclusion
     title: Conclusion
