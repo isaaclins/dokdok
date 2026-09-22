@@ -98,6 +98,10 @@ of files (guideline PDFs, a Word template, grading grid, their concept).
    **Never tell the user to edit markdown files or run commands** — they tell you what to
    write next, you do it and re-render. The Word file in `out/` is what they open.
 
+**Tripwire:** if you find yourself writing `document.xml`, calling python-docx, or zipping a
+folder into a `.docx`, stop — hand-built Word files come out broken (Word: "unreadable
+content") and have none of the checks. `dokdok new` + `dokdok render` is the only route.
+
 ## Someone has a project already
 
 `dokdok check` → fix ✖ → write → `dokdok log` → `dokdok render` (add `--pdf` if wanted).
