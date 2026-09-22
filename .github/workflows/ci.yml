@@ -8,4 +8,11 @@ jobs:
       - uses: astral-sh/setup-uv@v5
       - run: sudo apt-get install -y -qq pandoc libreoffice-writer libreoffice-script-provider-python
       - run: uv sync --group dev
+      - name: libreoffice smoke
+        run: |
+          soffice --version
+          pandoc -o /tmp/t.docx <<< '# Hi' && soffice --headless --convert-to pdf --outdir /tmp /tmp/t.docx; ls -la /tmp/t.pdf || true
+          mkdir -p /tmp/lo/user/Scripts/python && cp src/dokdok/lo_export.py /tmp/lo/user/Scripts/python/dokdok.py
+          DOKDOK_IN=/tmp/t.docx DOKDOK_OUT=/tmp/t2.pdf soffice -env:UserInstallation=file:///tmp/lo --headless --norestore 'vnd.sun.star.script:dokdok.py$export_pdf?language=Python&location=user' || true
+          ls -la /tmp/t2.pdf /tmp/t2.pdf.log 2>&1 || true; cat /tmp/t2.pdf.log 2>/dev/null || true
       - run: uv run pytest -q
