@@ -12,8 +12,8 @@ Die Prüfungsexperten lesen dieses Dokument; es wird benotet.
 - Jede Abbildung und Tabelle hat eine Beschriftung; Quellenverweise als `[@id]`.
 - Begriffe, die Fachfremde nicht kennen, in `glossary.yaml` eintragen (`term`, `definition`).
 - Arbeitsjournal: pro Arbeitstag `dokdok entry arbeitsjournal --date YYYY-MM-DD --title "Tag N"`.
-  Frag die Person nach ihrem Tag, bevor du schreibst. Wenn das Projekt ein Git-Repository hat
-  *und* die Person das möchte, darfst du den Verlauf (`git log`) als Gedächtnisstütze lesen –
-  frag vorher, und setz nicht voraus, dass sie Git kennt.
+  Frag die Person nach ihrem Tag, bevor du schreibst. `dokdok inputs arbeitsjournal` zeigt die
+  Commits seit dem letzten Eintrag – aber nur, wenn das Projekt ein Git-Repository ist. Frag
+  vorher, ob die Person das möchte, und setz nicht voraus, dass sie Git kennt.
 - Jede Sitzung, in der du Text geschrieben oder stark überarbeitet hast: `dokdok log` –
   das KI-Verzeichnis ist Pflicht.

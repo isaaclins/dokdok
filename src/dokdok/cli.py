@@ -7,7 +7,7 @@ from pathlib import Path
 
 import yaml
 
-from . import __version__, ailog, check as checkmod, doctype as dt, fromdocx, project as prj, render as rnd
+from . import __version__, ailog, check as checkmod, derive, doctype as dt, fromdocx, project as prj, render as rnd
 
 MECHANICAL_RULES = """
 ## dokdok (mechanical rules — generated, do not edit)
@@ -19,6 +19,7 @@ MECHANICAL_RULES = """
 - Cite with `[@id]`; every id must exist in `sources.yaml` (CSL YAML under `references:`).
 - Figures: `![Caption](path)` — caption is mandatory. Tables: pipe tables with a `Table: caption` line.
 - Audience-specific content: `::: {.only-for="blue-team"}` … `:::`.
+- Derived sections: `dokdok check` warns when a section's inputs changed after it was written; `dokdok inputs <id>` shows the material (files, or commits since the last write). You rewrite the section from it. If an input is the git log, ask the user first whether the project is in git and whether they want that used — never assume they know git.
 - Every session in which you wrote or substantially rewrote text: `dokdok log --tool "<agent name>" "<what>" --outcome "<what the user did with it>"`. Required by most schools; it renders into the AI-usage section automatically.
 - Before saying you are done: run `dokdok check` (and `dokdok check --final` before submission) and fix every ✖.
 - Render with `dokdok render` → `out/`. Never edit files in `out/`.
@@ -97,6 +98,14 @@ def cmd_entry(a):
     f.parent.mkdir(exist_ok=True)
     f.write_text(f"---\ntitle: {a.title or day}\ndate: {day}\n---\n\n{body}", encoding="utf-8")
     print(f"✔ {f.relative_to(p.root)}")
+
+
+def cmd_inputs(a):
+    """Print a derived section's inputs (files, git log since it was last written) for the agent to read."""
+    p = prj.load()
+    sf = p.section(a.section)
+    since = derive.written(sf) if (sf and not a.all) else None
+    print(derive.dump(p, a.section, since))
 
 
 def cmd_log(a):
@@ -188,6 +197,10 @@ def main(argv=None):
     s = sub.add_parser("entry", help="add an entry to a repeat section (journal day)")
     s.add_argument("section"); s.add_argument("--date", help="YYYY-MM-DD, default today"); s.add_argument("--title")
     s.set_defaults(fn=cmd_entry)
+
+    s = sub.add_parser("inputs", help="show a derived section's inputs (files / git log) to rewrite it from")
+    s.add_argument("section"); s.add_argument("--all", action="store_true", help="whole git history, not just since last write")
+    s.set_defaults(fn=cmd_inputs)
 
     s = sub.add_parser("log", help="record an AI-usage entry (rendered by a `generated: ai-log` section)")
     s.add_argument("purpose"); s.add_argument("--tool", required=True); s.add_argument("--outcome")

@@ -69,6 +69,7 @@ sections:
     required: true
     repeat: daily
     entry_title: "{title} – {date}"
+    derive_from: [git-log]      # only used if the project is a git repo; ask the person first
     hint: Ein Eintrag pro Arbeitstag. Ehrlich – Soll/Ist, was schiefging, welche Hilfe (auch KI) genutzt wurde.
 
   - id: quellen

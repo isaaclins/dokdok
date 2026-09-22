@@ -20,6 +20,7 @@ class Section:
     generated: str | None = None   # "sources" | "ai-log" | "glossary" | "figures" | "tables"
     only_for: list[str] = field(default_factory=list)
     repeat: str | None = None      # "daily": doc/<id>/YYYY-MM-DD.md, one ## per file, sorted by date
+    derive_from: list[str] = field(default_factory=list)   # inputs: file globs or "git-log"; see derive.py
     entry_title: str = "{title}"   # heading for repeat entries; {title} {date} from the entry's front matter
 
 

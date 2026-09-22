@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 import re
 
+from . import derive
 from .project import Project
 
 CITE = re.compile(r"\[@([\w:.-]+)|(?<![\w@])@([\w:.-]+)")
@@ -38,6 +39,9 @@ def run(p: Project, final: bool = False) -> list[Finding]:
                 out.append(Finding("doc/", "error", f"required section «{spec.title}» ({spec.id}) missing"
                                    + (" (no entries yet — `dokdok entry`)" if spec.repeat else "")))
             continue
+        for i in derive.stale(p, sf):
+            out.append(Finding(rel(sf.path) + ("/" if sf.entries else ""), "warn",
+                               f"stale: {i.name} changed after this section was written — `dokdok inputs {spec.id}`"))
         if spec.repeat:
             out.append(Finding(rel(sf.path) + "/", "ok", f"{len(sf.entries)} entries"))
             continue
