@@ -38,9 +38,11 @@ def test_check_finds_errors(project):
         assert msg in r.stdout
 
 
-def test_check_final_flags_placeholders(project):
-    assert "placeholder" not in dokdok("check", cwd=project).stdout
-    assert "placeholder" in dokdok("check", "--final", cwd=project).stdout
+def test_check_final_flags_placeholders_and_hints(project):
+    out = dokdok("check", cwd=project).stdout
+    assert "placeholder" not in out and "hint comment" not in out
+    out = dokdok("check", "--final", cwd=project).stdout
+    assert "placeholder" in out and "hint comment still present" in out
 
 
 def test_render_docx(project):

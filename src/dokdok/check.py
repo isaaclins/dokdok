@@ -68,6 +68,8 @@ def run(p: Project, final: bool = False) -> list[Finding]:
         if p.doctype.spelling.get("no_eszett") and "ß" in text:
             out.append(Finding(f, "error", "contains ß (use ss)"))
         if final:
+            if "dokdok:hint" in sf.body:
+                out.append(Finding(f, "error", "hint comment still present (delete once the section is written)"))
             ph = PLACEHOLDER.findall(text)
             if ph:
                 out.append(Finding(f, "error", f"{len(ph)} placeholder(s) left: {ph[0][:40]!r} …"))
