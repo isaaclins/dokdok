@@ -147,26 +147,42 @@ def render(p: Project, target: str = "default", pdf: bool = False, final: bool =
     return outs
 
 
+def _pandoc_default_reference(out_dir: Path) -> Path:
+    f = out_dir / ".pandoc-reference.docx"
+    if not f.exists():
+        f.write_bytes(subprocess.run(["pandoc", "--print-default-data-file", "reference.docx"], capture_output=True, check=True).stdout)
+    return f
+
+
 def _reference_with_hint_style(p: Project, out_dir: Path) -> Path:
-    """The reference.docx (or pandoc's default) with a grey, shaded «Hint» paragraph style added
-    if it doesn't define one — so visible hints look like guidance, not like content."""
+    """The doctype's reference.docx made safe for pandoc:
+    - every style pandoc's docx writer uses (Compact, Table, First Paragraph, captions, …) that the
+      reference lacks is merged in from pandoc's default reference — a template hollowed from a
+      school's Word file rarely has them, and without them tables and captions render garbled;
+    - a grey, shaded «Hint» paragraph style is added if missing, for visible hints."""
+    import re
     import zipfile
-    src = p.doctype.reference_docx
-    if src is None:
-        src = out_dir / ".pandoc-reference.docx"
-        src.write_bytes(subprocess.run(["pandoc", "--print-default-data-file", "reference.docx"], capture_output=True, check=True).stdout)
+    default = _pandoc_default_reference(out_dir)
+    src = p.doctype.reference_docx or default
+    with zipfile.ZipFile(default) as z:
+        default_styles = z.read("word/styles.xml")
     dst = out_dir / ".reference.docx"
     with zipfile.ZipFile(src) as zin, zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED) as zout:
         for item in zin.infolist():
             if item.filename.endswith("/"):
                 continue
             data = zin.read(item.filename)
-            if item.filename == "word/styles.xml" and b'w:styleId="Hint"' not in data:
-                style = (b'<w:style w:type="paragraph" w:customStyle="1" w:styleId="Hint"><w:name w:val="Hint"/>'
-                         b'<w:basedOn w:val="Normal"/><w:qFormat/><w:pPr><w:shd w:val="clear" w:color="auto" w:fill="F2F2F2"/>'
-                         b'<w:spacing w:before="120" w:after="120"/><w:ind w:left="170" w:right="170"/></w:pPr>'
-                         b'<w:rPr><w:i/><w:color w:val="595959"/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr></w:style>')
-                data = data.replace(b"</w:styles>", style + b"</w:styles>")
+            if item.filename == "word/styles.xml":
+                have = set(re.findall(rb'w:styleId="([^"]+)"', data))
+                missing = [m.group(0) for m in re.finditer(rb"<w:style\b[^>]*>.*?</w:style>", default_styles, re.S)
+                           if re.search(rb'w:styleId="([^"]+)"', m.group(0)).group(1) not in have]
+                extra = b"".join(missing)
+                if b'w:styleId="Hint"' not in have:
+                    extra += (b'<w:style w:type="paragraph" w:customStyle="1" w:styleId="Hint"><w:name w:val="Hint"/>'
+                              b'<w:basedOn w:val="Normal"/><w:qFormat/><w:pPr><w:shd w:val="clear" w:color="auto" w:fill="F2F2F2"/>'
+                              b'<w:spacing w:before="120" w:after="120"/><w:ind w:left="170" w:right="170"/></w:pPr>'
+                              b'<w:rPr><w:i/><w:color w:val="595959"/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr></w:style>')
+                data = data.replace(b"</w:styles>", extra + b"</w:styles>")
             zout.writestr(item, data)
     return dst
 

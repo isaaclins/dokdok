@@ -127,3 +127,25 @@ def test_hints_title_page_and_final(project):
     final = render.assemble(prj.load(project), final=True)
     assert 'custom-style="Hint"' not in final
     assert dokdok("render", "--final", cwd=project).returncode == 0
+
+
+def test_missing_pandoc_styles_are_merged(tmp_path):
+    """A reference.docx hollowed from a school template lacks pandoc's table/caption styles."""
+    import re, zipfile
+    dt = tmp_path / "dt"; shutil.copytree(DOCTYPE, dt)
+    ref = dt / "reference.docx"; src = zipfile.ZipFile(ref); items = [(i, src.read(i.filename)) for i in src.infolist()]
+    with zipfile.ZipFile(ref, "w", zipfile.ZIP_DEFLATED) as z:
+        for i, data in items:
+            if i.filename == "word/styles.xml":
+                for sid in ("Compact", "Table", "FirstParagraph", "TableCaption", "ImageCaption"):
+                    data = re.sub(rb'<w:style\b[^>]*w:styleId="%s".*?</w:style>' % sid.encode(), b"", data, flags=re.S)
+                assert b'w:styleId="Compact"' not in data
+            z.writestr(i, data)
+    assert dokdok("new", "p", "--type", str(dt), cwd=tmp_path).returncode == 0
+    (tmp_path / "p" / "doc" / "02-main-part.md").write_text(
+        "---\nsection: main-part\n---\n\n## X\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\nTable: T\n", encoding="utf-8")
+    assert dokdok("render", cwd=tmp_path / "p").returncode == 0
+    with zipfile.ZipFile(tmp_path / "p" / "out" / "p.docx") as z:
+        st = z.read("word/styles.xml")
+    for sid in ("Compact", "Table", "FirstParagraph", "TableCaption", "Hint"):
+        assert b'w:styleId="%s"' % sid.encode() in st, sid
