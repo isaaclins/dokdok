@@ -57,6 +57,8 @@ def render(p: Project, target: str = "default", pdf: bool = False) -> list[Path]
     cmd = ["pandoc", "-f", "markdown", "-o", str(out), "--toc", "--resource-path", str(p.root)]
     if p.doctype.number_sections:
         cmd.append("--number-sections")
+    if fmt in ("html", "html5"):
+        cmd += ["--standalone", "--embed-resources"]
     if p.sources_path.exists():
         cmd += ["--citeproc", "--bibliography", str(p.sources_path)]
     if fmt == "docx" and p.doctype.reference_docx:
