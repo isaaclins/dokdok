@@ -1,0 +1,7 @@
+{
+  "name": "dokdok",
+  "owner": { "name": "Isaac Lins" },
+  "plugins": [
+    { "name": "dokdok", "source": "./", "description": "Structured documents as real Word/PDF files, written with your agent." }
+  ]
+}

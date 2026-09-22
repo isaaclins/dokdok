@@ -1,0 +1,9 @@
+{
+  "name": "dokdok",
+  "version": "0.1.0",
+  "description": "Structured documents, written by agents, rendered as real Word/PDF files.",
+  "keywords": ["pi-package"],
+  "license": "MIT",
+  "repository": "github:isaaclins/dokdok",
+  "pi": { "skills": ["./skills"] }
+}

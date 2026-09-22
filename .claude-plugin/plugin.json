@@ -1,0 +1,8 @@
+{
+  "name": "dokdok",
+  "description": "Write structured documents (theses, final reports, pentest reports) that follow a required format, delivered as real Word/PDF files.",
+  "version": "0.1.0",
+  "author": { "name": "Isaac Lins" },
+  "repository": "https://github.com/isaaclins/dokdok",
+  "license": "MIT"
+}

@@ -44,5 +44,8 @@ Install one: `dokdok add <folder-or-git-url>`.
 
 Needs `pandoc`. PDF needs LibreOffice (or Word on macOS).
 
+The repo is also the agent skill: a Claude Code plugin (`.claude-plugin/`) and a pi package
+(`package.json`), both pointing at `skills/dokdok/SKILL.md`. Codex users copy that folder.
+
 See [DESIGN.md](DESIGN.md) for the why. `examples/thesis` is a small fictional
 project you can render right away.
