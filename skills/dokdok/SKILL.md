@@ -46,6 +46,8 @@ of files (guideline PDFs, a Word template, grading grid, their concept).
    `dokdok log --tool "<you>" "…" --outcome "…"`, `dokdok check`, fix every ✖.
 6. Hand over: where the Word file is, what you filled in, what is still theirs
    (the placeholders). Offer the next step (e.g. the `interview` skill if the doctype has it).
+   **Never tell the user to edit markdown files or run commands** — they tell you what to
+   write next, you do it and re-render. The Word file in `out/` is what they open.
 
 ## Someone has a project already
 
