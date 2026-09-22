@@ -17,11 +17,11 @@ if [ "$ENGINE" = claude ]; then
   DOKDOK_HOME="$W/home" claude -p --model "$MODEL" --plugin-dir "$REPO" --dangerously-skip-permissions --output-format text \
     "$PROMPT Alles liegt im Ordner schule/." < /dev/null > "$OUT/antwort.txt" 2>&1
 else
-  export CODEX_HOME="$W/codexhome"; mkdir -p "$CODEX_HOME/skills"
-  cp -r "$REPO/skills/dokdok" "$CODEX_HOME/skills/dokdok"
-  cp "$REPO/AGENTS.md" "$W/AGENTS.md" 2>/dev/null || true
-  DOKDOK_HOME="$W/home" codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -C "$W" \
-    "$PROMPT Alles liegt im Ordner schule/. Use the dokdok skill in \$CODEX_HOME/skills/dokdok." < /dev/null > "$OUT/antwort.txt" 2>&1
+  cp -r "$REPO/skills/dokdok" "$HOME/.codex/skills/dokdok" 2>/dev/null
+  MODELFLAG=""; [ "$MODEL" != "default" ] && MODELFLAG="-m $MODEL"
+  DOKDOK_HOME="$W/home" codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check \
+    -c model_reasoning_effort=high -C "$W" $MODELFLAG \
+    "$PROMPT Alles liegt im Ordner schule/. Read the dokdok skill at ~/.codex/skills/dokdok/SKILL.md and use the dokdok CLI to do this." < /dev/null > "$OUT/antwort.txt" 2>&1
 fi
 echo "exit=$? engine=$ENGINE model=$MODEL seconds=$(( $(date +%s) - start ))" >> "$OUT/antwort.txt"
 # collect
