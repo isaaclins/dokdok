@@ -10,17 +10,46 @@ from . import ailog
 from .project import Project
 
 
-def assemble(p: Project, target: str = "default") -> str:
+TOC_FIELD = ('```{{=openxml}}\n<w:p><w:pPr><w:pStyle w:val="TOCHeading"/></w:pPr><w:r><w:t>{title}</w:t></w:r></w:p>'
+             '<w:p><w:r><w:fldChar w:fldCharType="begin" w:dirty="true"/></w:r><w:r><w:instrText xml:space="preserve"> TOC \\o "1-3" \\h \\z \\u </w:instrText></w:r>'
+             '<w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:t>{title}</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r></w:p>\n```\n\n')
+PAGE_BREAK = '```{=openxml}\n<w:p><w:r><w:br w:type="page"/></w:r></w:p>\n```\n\n'
+
+
+def _hint_block(p: Project, text: str) -> str:
+    body = " ".join(line.strip() for line in text.strip().splitlines())
+    return f'::: {{custom-style="Hint"}}\n*{p.doctype.hint_label}:* {body}\n:::\n\n'
+
+
+def assemble(p: Project, target: str = "default", final: bool = False) -> str:
     tcfg = {**p.doctype.targets.get(target, {}), **p.config.get("targets", {}).get(target, {})}
     audience = tcfg.get("audience")
-    meta = {k: v for k, v in p.config.items() if k not in ("doctype", "targets")}
+    fmt = tcfg.get("format", "docx")
+    show_hints = p.doctype.hints == "visible" and not final
+    breaks = p.doctype.page_breaks and fmt == "docx"
+    meta = {k: v for k, v in p.config.items() if k not in ("doctype", "targets", "derive")}
     meta.setdefault("lang", p.doctype.lang)
     meta.setdefault("toc-title", p.doctype.toc_title)
+    parts = []
+    title_tpl = (p.doctype.path / p.doctype.title_page) if p.doctype.title_page else None
+    if title_tpl and title_tpl.exists():
+        # own title page from the doctype's template; keep pandoc from adding its title block
+        import re
+        vals = {k: str(v) for k, v in meta.items() if isinstance(v, (str, int))}
+        tpl = re.sub(r"\{(\w+)\}", lambda m: vals.get(m.group(1), f"[{m.group(1)}]"), title_tpl.read_text(encoding="utf-8"))
+        parts.append(tpl.rstrip() + "\n\n")
+        if breaks: parts.append(PAGE_BREAK)
+        meta = {k: v for k, v in meta.items() if k not in ("title", "subtitle", "author", "date")}
+    if fmt == "docx":
+        parts.append(TOC_FIELD.format(title=p.doctype.toc_title))
+        if breaks: parts.append(PAGE_BREAK)
     front = "---\n" + "".join(f"{k}: {v!r}\n" for k, v in meta.items() if isinstance(v, (str, int))) + "---\n\n"
-    parts = [front]
+    parts.insert(0, front)
     for spec in p.doctype.sections:
         if spec.only_for and audience not in spec.only_for:
             continue
+        if breaks and len(parts) > 1 and parts[-1] != PAGE_BREAK:
+            parts.append(PAGE_BREAK)
         if spec.generated == "sources":
             parts.append(f"# {spec.title}\n\n::: {{#refs}}\n:::\n\n")
             continue
@@ -37,13 +66,14 @@ def assemble(p: Project, target: str = "default") -> str:
         sf = p.section(spec.id)
         if sf is None:
             continue
+        hint = _hint_block(p, "\n".join(sf.hints())) if show_hints and sf.hints() else ""
         if spec.repeat:
-            parts.append(f"# {spec.title}\n\n")
+            parts.append(f"# {spec.title}\n\n{hint}")
             for e in sf.entries:
                 head = spec.entry_title.format(title=e.meta.get("title", e.path.stem), date=e.meta.get("date", e.path.stem))
                 parts.append(f"## {head}\n\n{_shift(e.text.strip())}\n\n")
             continue
-        parts.append(f"# {spec.title}\n\n{sf.text.strip()}\n\n")
+        parts.append(f"# {spec.title}\n\n{hint}{sf.text.strip()}\n\n")
     md = "".join(parts)
     if audience:
         md = _filter_audience(md, audience)
@@ -85,7 +115,7 @@ def _filter_audience(md: str, audience: str) -> str:
     return re.sub(r':::\s*\{\.only-for="([^"]+)"\}\n(.*?)\n:::\n?', keep, md, flags=re.S)
 
 
-def render(p: Project, target: str = "default", pdf: bool = False) -> list[Path]:
+def render(p: Project, target: str = "default", pdf: bool = False, final: bool = False) -> list[Path]:
     if not shutil.which("pandoc"):
         raise SystemExit("pandoc not found — run `dokdok doctor`")
     tcfg = {**p.doctype.targets.get(target, {}), **p.config.get("targets", {}).get(target, {})}
@@ -93,17 +123,19 @@ def render(p: Project, target: str = "default", pdf: bool = False) -> list[Path]
     out_dir = p.root / "out"; out_dir.mkdir(exist_ok=True)
     name = p.config.get("filename") or f"{p.root.name}{'' if target == 'default' else '-' + target}"
     out = out_dir / f"{name}.{fmt}"
-    md = assemble(p, target)
+    md = assemble(p, target, final=final)
     (out_dir / f"{name}.md").write_text(md, encoding="utf-8")   # kept for debugging
-    cmd = ["pandoc", "-f", "markdown", "-o", str(out), "--toc", "--resource-path", str(p.root)]
+    cmd = ["pandoc", "-f", "markdown", "-o", str(out), "--resource-path", str(p.root)]
+    if fmt != "docx":
+        cmd.append("--toc")           # docx gets its own TOC field after the title page
     if p.doctype.number_sections:
         cmd.append("--number-sections")
     if fmt in ("html", "html5"):
         cmd += ["--standalone", "--embed-resources"]
     if p.sources_path.exists():
         cmd += ["--citeproc", "--bibliography", str(p.sources_path)]
-    if fmt == "docx" and p.doctype.reference_docx:
-        cmd += ["--reference-doc", str(p.doctype.reference_docx)]
+    if fmt == "docx":
+        cmd += ["--reference-doc", str(_reference_with_hint_style(p, out_dir))]
     for lua in sorted((p.doctype.path / "filters").glob("*.lua")):
         cmd += ["--lua-filter", str(lua)]
     subprocess.run(cmd, input=md, text=True, encoding="utf-8", check=True)
@@ -113,6 +145,30 @@ def render(p: Project, target: str = "default", pdf: bool = False) -> list[Path]
     if pdf and fmt == "docx":
         outs.append(docx_to_pdf(out))
     return outs
+
+
+def _reference_with_hint_style(p: Project, out_dir: Path) -> Path:
+    """The reference.docx (or pandoc's default) with a grey, shaded «Hint» paragraph style added
+    if it doesn't define one — so visible hints look like guidance, not like content."""
+    import zipfile
+    src = p.doctype.reference_docx
+    if src is None:
+        src = out_dir / ".pandoc-reference.docx"
+        src.write_bytes(subprocess.run(["pandoc", "--print-default-data-file", "reference.docx"], capture_output=True, check=True).stdout)
+    dst = out_dir / ".reference.docx"
+    with zipfile.ZipFile(src) as zin, zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED) as zout:
+        for item in zin.infolist():
+            if item.filename.endswith("/"):
+                continue
+            data = zin.read(item.filename)
+            if item.filename == "word/styles.xml" and b'w:styleId="Hint"' not in data:
+                style = (b'<w:style w:type="paragraph" w:customStyle="1" w:styleId="Hint"><w:name w:val="Hint"/>'
+                         b'<w:basedOn w:val="Normal"/><w:qFormat/><w:pPr><w:shd w:val="clear" w:color="auto" w:fill="F2F2F2"/>'
+                         b'<w:spacing w:before="120" w:after="120"/><w:ind w:left="170" w:right="170"/></w:pPr>'
+                         b'<w:rPr><w:i/><w:color w:val="595959"/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr></w:style>')
+                data = data.replace(b"</w:styles>", style + b"</w:styles>")
+            zout.writestr(item, data)
+    return dst
 
 
 def sanitize_docx(path: Path) -> None:

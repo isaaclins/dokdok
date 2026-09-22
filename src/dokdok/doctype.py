@@ -4,6 +4,7 @@ from pathlib import Path
 import os
 import yaml
 
+HINT_LABELS = {"de": "Hinweis", "fr": "Remarque", "it": "Nota", "en": "Note"}
 TOC_TITLES = {"de": "Inhaltsverzeichnis", "fr": "Table des matières", "it": "Indice", "en": "Table of Contents"}
 HOME_TYPES = Path(os.environ.get("DOKDOK_HOME", Path.home() / ".dokdok")) / "doctypes"
 REPO_TYPES = Path(__file__).resolve().parents[2] / "doctypes"
@@ -36,6 +37,10 @@ class Doctype:
     targets: dict
     number_sections: bool
     toc_title: str
+    hints: str                 # "visible" (grey paragraphs in the document, stripped by --final) | "hidden"
+    hint_label: str
+    page_breaks: bool          # new page before every top-level section
+    title_page: str | None     # markdown template (relative to the doctype) with {title} {author} {key} placeholders
 
     @property
     def reference_docx(self) -> Path | None:
@@ -72,4 +77,8 @@ def load(ref: str) -> Doctype:
         targets=d.get("targets", {"default": {"format": "docx"}}),
         number_sections=d.get("number_sections", True),
         toc_title=d.get("toc_title", TOC_TITLES.get(d.get("lang", "en")[:2], "Table of Contents")),
+        hints=d.get("hints", "visible"),
+        hint_label=d.get("hint_label", HINT_LABELS.get(d.get("lang", "en")[:2], "Note")),
+        page_breaks=d.get("page_breaks", True),
+        title_page=d.get("title_page"),
     )

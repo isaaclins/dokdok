@@ -4,6 +4,7 @@ title: School thesis, German (example)
 lang: de-CH
 spelling:
   no_eszett: true
+title_page: sections/title.md
 
 sections:
   - id: einleitung

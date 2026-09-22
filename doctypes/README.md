@@ -18,6 +18,10 @@ title: School thesis            # shown in `dokdok types list`
 lang: de-CH                     # pandoc lang; picks the default toc_title
 toc_title: Inhaltsverzeichnis   # optional override
 number_sections: true           # false if reference.docx heading styles number themselves
+hints: visible                  # hints render as grey «Hinweis» paragraphs; `render --final` strips them
+hint_label: Hinweis             # default from lang
+page_breaks: true               # new page before every top-level section (docx)
+title_page: sections/title.md   # markdown with {title} {subtitle} {author} {any dokdok.yaml key}
 spelling:
   no_eszett: true               # error on ß
 

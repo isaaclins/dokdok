@@ -17,7 +17,7 @@ MECHANICAL_RULES = """
 - One markdown file per section in `doc/`, named `NN-<section-id>.md`, front matter `section: <id>`.
 - Section titles come from the doctype; start your headings at `##`.
 - Repeat sections (e.g. a daily journal) are folders: `doc/<id>/YYYY-MM-DD.md`, one file per entry, created with `dokdok entry <id> --date YYYY-MM-DD`. Inside an entry, start headings at `##`; dokdok nests them under the entry.
-- `<!-- dokdok:hint … -->` comments are guidance from the doctype. Read them, then delete them when the section is written.
+- `<!-- dokdok:hint … -->` comments are guidance from the doctype. They render as grey «Hinweis» paragraphs in the Word file so the person sees them while writing; `dokdok render --final` strips them. Delete a hint once its section is written.
 - Cite with `[@id]`; every id must exist in `sources.yaml` (CSL YAML under `references:`).
 - Figures: `![Caption](path)` — caption is mandatory. Tables: pipe tables with a `Table: caption` line.
 - Audience-specific content: `::: {.only-for="blue-team"}` … `:::`.
@@ -86,7 +86,7 @@ def cmd_check(a):
 
 def cmd_render(a):
     p = prj.load()
-    for out in rnd.render(p, target=a.target, pdf=a.pdf):
+    for out in rnd.render(p, target=a.target, pdf=a.pdf, final=a.final):
         print(f"✔ {out.relative_to(p.root)}")
 
 
@@ -180,9 +180,23 @@ def cmd_types_lint(a):
     for s in d.sections:
         if not s.generated and s.required and not s.title:
             probs.append(f"section {s.id} has no title")
+    # completeness: a template the person writes inside needs structure and guidance per section
+    thin = []
+    for s_ in d.sections:
+        if s_.generated:
+            continue
+        has_tpl = (d.path / "sections" / f"{s_.id}.md").exists()
+        if not s_.subsections and not has_tpl and not s_.repeat:
+            thin.append(f"{s_.id} (no subsections, no sections/{s_.id}.md)")
+        elif not s_.hint:
+            thin.append(f"{s_.id} (no hint)")
+    if thin:
+        probs.append("thin sections — the person will face empty headings: " + "; ".join(thin))
     for m in probs:
         print(f"  ⚠ {m}")
-    print(f"  ✔ {d.name}: {len(d.sections)} sections, {len(d.checks)} checks")
+    n_sub = sum(len(s_.subsections) for s_ in d.sections)
+    print(f"  ✔ {d.name}: {len(d.sections)} sections, {n_sub} subsections, "
+          f"{sum(bool(s_.hint) for s_ in d.sections)} hints, {len(d.checks)} checks")
 
 
 def cmd_types_from_docx(a):
@@ -220,6 +234,7 @@ def main(argv=None):
     s = sub.add_parser("render", help="render a target into out/")
     s.add_argument("target", nargs="?", default="default")
     s.add_argument("--pdf", action="store_true", help="also convert docx → pdf")
+    s.add_argument("--final", action="store_true", help="strip hints (submission version)")
     s.set_defaults(fn=cmd_render)
 
     s = sub.add_parser("entry", help="add an entry to a repeat section (journal day)")

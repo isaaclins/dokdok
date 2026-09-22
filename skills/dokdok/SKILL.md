@@ -38,8 +38,23 @@ of files (guideline PDFs, a Word template, grading grid, their concept).
 3. **Make the doctype match the guideline**: edit its `doctype.yaml` — sections in the
    required order, `required`, `subsections`, `words`, a `hint` per section carrying the
    guideline's demands and grading points; `AGENTS.md` with the writing rules (language,
-   citation style, what must never be invented). Add `generated: sources` / `ai-log` sections
-   if the guideline wants a bibliography / AI declaration.
+   citation style, what must never be invented). Add `generated: sources` / `ai-log` /
+   `figures` sections if the guideline wants a bibliography / AI declaration / list of figures.
+   Give it a `title_page` template (see `doctypes/school-thesis-de/sections/title.md`).
+
+   **A template is the complete skeleton of the finished document, not a list of headings.**
+   The person will write *inside* it in Word. So:
+   - One chapter per research question from their concept, each with the 3–4 subchapters the
+     question implies (definition → history → today → comparison, or whatever fits), plus a
+     chapter for each method (interview: portrait, the interview, evaluation).
+   - Under **every** subchapter a `[bracketed instruction]`: what belongs here, which interview
+     questions or sources feed it, roughly how long. That's the `sections/<id>.md` file.
+   - The `hint` of each section says what the guideline grades there and with how many points.
+     Hints render as grey «Hinweis» boxes in the Word file — that's what the person reads.
+   - Appendix: interview questions from their material, declaration templates, anything the
+     guideline says is mandatory. Nothing the guideline mentions may be missing.
+   Compare against a filled example if one exists: the template should have every heading the
+   example has. Aim for the page count of a finished skeleton (10+ pages), not a 3-page outline.
 4. **Verify before showing anything**: `dokdok types lint <folder>` prints what the
    reference.docx contains (header/footer, images, heading numbering). If the school template
    has a logo or numbered headings and lint says otherwise, fix it before continuing.

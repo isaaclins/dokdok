@@ -8,6 +8,7 @@ from . import doctype as dt
 
 FRONT = re.compile(r"\A---\n(.*?)\n---\n?", re.S)
 HINT = re.compile(r"<!--\s*dokdok:hint.*?-->\s*", re.S)
+HINT_TEXT = re.compile(r"<!--\s*dokdok:hint(.*?)-->", re.S)
 
 
 @dataclass
@@ -20,8 +21,11 @@ class SectionFile:
 
     @property
     def text(self) -> str:
-        """Body without hints — what gets rendered and counted."""
+        """Body without hints — what gets checked and counted."""
         return HINT.sub("", self.body)
+
+    def hints(self) -> list[str]:
+        return [m.strip() for m in HINT_TEXT.findall(self.body)]
 
 
 @dataclass

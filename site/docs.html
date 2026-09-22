@@ -38,7 +38,7 @@ dokdok doctor</code></pre>
   <table>
     <tr><td><code>dokdok new &lt;name&gt; --type &lt;doctype&gt;</code></td><td>create a project from a doctype (<code>--title</code>, <code>--author</code>)</td></tr>
     <tr><td><code>dokdok check [--final]</code></td><td>lint the project against its doctype; <code>--final</code> also rejects placeholders and leftover hints</td></tr>
-    <tr><td><code>dokdok render [target] [--pdf]</code></td><td>render into <code>out/</code>; docx by default, PDF via LibreOffice</td></tr>
+    <tr><td><code>dokdok render [target] [--pdf] [--final]</code></td><td>render into <code>out/</code>; docx by default, PDF via LibreOffice; <code>--final</code> strips the hints</td></tr>
     <tr><td><code>dokdok entry &lt;section&gt; [--date D] [--title T]</code></td><td>add an entry to a repeat section, e.g. a journal day</td></tr>
     <tr><td><code>dokdok log --tool T "purpose" [--outcome O]</code></td><td>append to the AI usage log</td></tr>
     <tr><td><code>dokdok add &lt;folder-or-git-url&gt;</code></td><td>install a doctype into <code>~/.dokdok/doctypes/</code></td></tr>
@@ -81,6 +81,7 @@ Text with a citation [@survey2025] and a figure:
 ![Winter cluster (source: own drawing)](img/cluster.svg)</code></pre>
   <ul>
     <li>The section title (<code>#</code>) comes from the doctype; start your headings at <code>##</code>.</li>
+    <li>Hints stay visible in the Word file as grey “Note” paragraphs while the person writes — that's the point of a template — and disappear with <code>render --final</code>.</li>
     <li>Citations: <code>[@id]</code>. Every id must exist in <code>sources.yaml</code> under <code>references:</code> (CSL YAML — <code>id</code>, <code>type</code>, <code>title</code>, <code>author</code>, <code>issued</code>, <code>URL</code>…).</li>
     <li>Figures need a caption. Tables: pipe tables followed by <code>Table: caption</code>.</li>
     <li>Things only the human can supply: leave a visible <code>[placeholder]</code>. <code>check --final</code> finds them.</li>
@@ -101,6 +102,9 @@ Text with a citation [@survey2025] and a figure:
 title: School thesis
 lang: en                        # picks the TOC title; override with toc_title
 number_sections: true           # false if reference.docx heading styles number themselves
+hints: visible                  # hints become grey “Note” paragraphs in the docx; render --final strips them
+page_breaks: true               # new page before every chapter
+title_page: sections/title.md   # {title} {subtitle} {author} {any dokdok.yaml key}
 spelling: { no_eszett: true }   # German: error on ß
 
 sections:

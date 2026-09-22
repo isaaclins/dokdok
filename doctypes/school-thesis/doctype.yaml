@@ -2,6 +2,7 @@
 name: school-thesis
 title: School thesis (example)
 lang: en
+title_page: sections/title.md
 
 sections:
   - id: introduction

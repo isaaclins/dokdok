@@ -18,7 +18,7 @@ def dokdok(*args, cwd):
 
 @pytest.fixture
 def project(tmp_path):
-    r = dokdok("new", "thesis", "--type", str(DOCTYPE), "--title", "T", "--author", "A", cwd=tmp_path)
+    r = dokdok("new", "thesis", "--type", str(DOCTYPE), "--title", "T", "--author", "Jonas", cwd=tmp_path)
     assert r.returncode == 0, r.stderr
     return tmp_path / "thesis"
 
@@ -116,3 +116,14 @@ def test_render_sanitizes_directory_entries(tmp_path):
     with zipfile.ZipFile(tmp_path / "p" / "out" / "p.docx") as z:
         assert not any(n.endswith("/") for n in z.namelist())
         assert b'PartName="/word/media/"' not in z.read("[Content_Types].xml")
+
+
+def test_hints_title_page_and_final(project):
+    from dokdok import project as prj, render
+    md = render.assemble(prj.load(project))
+    assert 'custom-style="Hint"' in md and "*Note:* Finish this last." in md      # hint visible
+    assert md.index("| Name | Jonas |") < md.index("fldCharType") < md.index("# Introduction")   # title page, TOC, body
+    assert md.count(render.PAGE_BREAK) >= 4
+    final = render.assemble(prj.load(project), final=True)
+    assert 'custom-style="Hint"' not in final
+    assert dokdok("render", "--final", cwd=project).returncode == 0
