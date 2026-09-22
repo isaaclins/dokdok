@@ -3,7 +3,7 @@ name = "dokdok"
 version = "0.1.0"
 description = "Structured documents, written by agents, rendered as real Word/PDF files."
 requires-python = ">=3.11"
-dependencies = ["pyyaml>=6"]
+dependencies = ["pyyaml>=6", "pillow>=10"]
 
 [dependency-groups]
 dev = ["pytest>=8"]

@@ -73,6 +73,8 @@ Inside a section, audience-specific blocks:
 ## Making one
 
 - From scratch: copy the closest bundled doctype, edit the yaml, restyle `reference.docx` in Word.
+- From a PDF only: `dokdok types from-pdf file.pdf` — logo, colour, font, header/footer layout (style only).
+- Header/footer text: set `header:` / `footer:` in the project's `dokdok.yaml` (tokens `{title}`, `{author}`, …); a reference's running lines name the original author otherwise.
 - From a Word file you like: `dokdok types from-docx file.docx` (add `--style-only` when the file is a filled example, not a blank template) — keeps its styles/header/footer,
   turns the heading outline into sections and placeholder text into hints.
 - Check it: `dokdok types lint <folder>`, then `dokdok new smoke --type <folder> && cd smoke && dokdok render`.

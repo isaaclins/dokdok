@@ -43,6 +43,12 @@ of files (guideline PDFs, a Word template, grading grid, their concept).
    to see how a finished one is organised (how many levels, where the appendix goes).
    Without `--style-only`, from-docx also turns the file's outline into sections — use that
    only for a genuinely blank template.
+   **Only a PDF?** `dokdok types from-pdf <file.pdf> --name …` pulls the logo, colours, font and
+   header/footer layout out of it (style only).
+   **Running header/footer:** the reference's header and footer name the *other* person and
+   their topic. `dokdok types lint` prints them. Set `header:` and `footer:` in the project's
+   `dokdok.yaml` (tokens `{title}`, `{author}`, any other key) so the document carries this
+   person's name — never leave the original's.
    **The document you hand over is always produced by dokdok from a doctype** — never a
    copied or edited version of the reference file, even if that file already looks like the
    person's own work. Only a dokdok project gives them the checks, the hint boxes that

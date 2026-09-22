@@ -8,7 +8,7 @@ from pathlib import Path
 
 import yaml
 
-from . import __version__, ailog, check as checkmod, derive, doctype as dt, fromdocx, project as prj, render as rnd
+from . import __version__, ailog, check as checkmod, derive, doctype as dt, fromdocx, frompdf, project as prj, render as rnd
 
 MECHANICAL_RULES = """
 ## dokdok (mechanical rules — generated, do not edit)
@@ -173,6 +173,12 @@ def cmd_types_lint(a):
             numbered = bool(h1 and b"<w:numPr" in h1.group(0))
         print(f"  · reference.docx: {hdr} header(s), {ftr} footer(s), {imgs} image(s), fonts {', '.join(fonts) or '?'}, "
               f"headings numbered by style: {'yes' if numbered else 'no'} (number_sections: {d.number_sections})")
+        with zipfile.ZipFile(d.reference_docx) as z:
+            for n in sorted(names):
+                if _re.match(r"word/(header|footer)\d*\.xml$", n):
+                    txt = " ".join(_re.findall(r"<w:t[^>]*>([^<]*)</w:t>", z.read(n).decode("utf-8", "replace"))).strip()
+                    if txt:
+                        print(f"  · {n.split('/')[1]}: «{txt}»" + ("" if "{" in txt else "  ← names/topic of the original? set header:/footer: in dokdok.yaml ({title} {author} tokens)"))
         if numbered and d.number_sections:
             probs.append("heading styles number themselves AND number_sections is true → numbers will double; set number_sections: false")
         if not numbered and not d.number_sections:
@@ -208,6 +214,17 @@ def cmd_types_from_docx(a):
     for n in ol.notes:
         print(f"  ⚠ {n}")
     print("  next: edit doctype.yaml + AGENTS.md, then `dokdok types lint` and a smoke render")
+
+
+def cmd_types_from_pdf(a):
+    dest = Path(a.dest).resolve() if a.dest else dt.HOME_TYPES
+    path, look = frompdf.create(Path(a.pdf).resolve(), dest, name=a.name or fromdocx.slug(Path(a.pdf).stem), lang=a.lang)
+    print(f"✔ {path}")
+    print(f"  logo: {'extracted from page 1 (%dx%d px)' % look.logo_size if look.logo else 'none'} · heading colour #{look.color} · font: {look.font or 'default'}")
+    print(f"  header: «{look.header}»  footer: «{look.footer}»")
+    for n in look.notes:
+        print(f"  ⚠ {n}")
+    print("  style only — sections come from the guideline; next: edit doctype.yaml + AGENTS.md, `dokdok types lint`")
 
 
 def main(argv=None):
@@ -259,6 +276,9 @@ def main(argv=None):
     s.add_argument("--lang", default="de-CH")
     s.add_argument("--style-only", action="store_true", help="keep the look, ignore the file's content (for filled examples)")
     s.set_defaults(fn=cmd_types_from_docx)
+    s = t.add_parser("from-pdf", help="create a doctype whose look comes from a PDF (logo, header/footer, font, colour)")
+    s.add_argument("pdf"); s.add_argument("--name"); s.add_argument("--dest"); s.add_argument("--lang", default="de-CH")
+    s.set_defaults(fn=cmd_types_from_pdf)
 
     a = ap.parse_args(argv)
     a.fn(a)

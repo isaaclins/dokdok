@@ -167,11 +167,16 @@ def _reference_with_hint_style(p: Project, out_dir: Path) -> Path:
     with zipfile.ZipFile(default) as z:
         default_styles = z.read("word/styles.xml")
     dst = out_dir / ".reference.docx"
+    vals = {k: str(v) for k, v in p.config.items() if isinstance(v, (str, int))}
+    overrides = {"header": p.config.get("header"), "footer": p.config.get("footer")}
     with zipfile.ZipFile(src) as zin, zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED) as zout:
         for item in zin.infolist():
             if item.filename.endswith("/"):
                 continue
             data = zin.read(item.filename)
+            kind = "header" if re.match(r"word/header\d*\.xml$", item.filename) else "footer" if re.match(r"word/footer\d*\.xml$", item.filename) else None
+            if kind:
+                data = _running_text(data, overrides.get(kind), vals)
             if item.filename == "word/styles.xml":
                 have = set(re.findall(rb'w:styleId="([^"]+)"', data))
                 missing = [m.group(0) for m in re.finditer(rb"<w:style\b[^>]*>.*?</w:style>", default_styles, re.S)
@@ -185,6 +190,32 @@ def _reference_with_hint_style(p: Project, out_dir: Path) -> Path:
                 data = data.replace(b"</w:styles>", extra + b"</w:styles>")
             zout.writestr(item, data)
     return dst
+
+
+def _running_text(xml: bytes, override: str | None, vals: dict) -> bytes:
+    """Header/footer text. Tokens like {title} {author} are substituted from dokdok.yaml. With an
+    `header:`/`footer:` override, every text run outside a PAGE field is replaced: the first gets
+    the override, the others are emptied; drawings (logo), tabs and page-number fields stay."""
+    import re as _re
+    esc = lambda t: t.encode("utf-8").replace(b"&", b"&amp;").replace(b"<", b"&lt;")
+    sub = lambda t: _re.sub(r"\{(\w+)\}", lambda m: vals.get(m.group(1), m.group(0)), t)
+    if not override:
+        return _re.sub(rb"\{(\w+)\}", lambda m: esc(vals.get(m.group(1).decode(), m.group(0).decode())), xml)
+    # runs inside a field (between fldChar begin and end) are the page number — leave them
+    field_spans = [(m.start(), m.end()) for m in _re.finditer(rb'<w:fldChar w:fldCharType="begin"/>.*?<w:fldChar w:fldCharType="end"/>', xml, _re.S)]
+    in_field = lambda i: any(a <= i < b for a, b in field_spans)
+    out, pos, placed = [], 0, False
+    for m in _re.finditer(rb"<w:t(?: [^>]*)?>[^<]*</w:t>", xml):
+        out.append(xml[pos:m.start()])
+        if in_field(m.start()):
+            out.append(m.group(0))
+        elif not placed:
+            out.append(b'<w:t xml:space="preserve">' + esc(sub(override)) + b"</w:t>"); placed = True
+        else:
+            out.append(b"<w:t></w:t>")
+        pos = m.end()
+    out.append(xml[pos:])
+    return b"".join(out)
 
 
 def sanitize_docx(path: Path) -> None:
