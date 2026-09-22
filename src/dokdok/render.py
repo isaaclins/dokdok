@@ -95,12 +95,13 @@ def docx_to_pdf(docx: Path) -> Path:
                "vnd.sun.star.script:dokdok.py$export_pdf?language=Python&location=user"]
         env = {**os.environ, "DOKDOK_IN": str(docx), "DOKDOK_OUT": str(pdf)}
         try:
-            subprocess.run(cmd, check=True, capture_output=True, timeout=180, env=env)
+            r = subprocess.run(cmd, capture_output=True, text=True, timeout=180, env=env)
         except subprocess.TimeoutExpired:
             raise SystemExit("LibreOffice hung. On macOS, open LibreOffice once by hand after installing "
                              "(Gatekeeper first-launch dialog), then retry.")
         if not pdf.exists():
-            raise SystemExit("LibreOffice did not produce a PDF")
+            raise SystemExit("LibreOffice did not produce a PDF. On Debian/Ubuntu install "
+                             "libreoffice-script-provider-python.\n" + (r.stderr or r.stdout).strip())
         return pdf
     if platform.system() == "Darwin" and Path("/Applications/Microsoft Word.app").exists():
         script = f'''

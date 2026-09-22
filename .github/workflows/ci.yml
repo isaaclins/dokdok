@@ -6,6 +6,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
-      - run: sudo apt-get install -y -qq pandoc libreoffice-writer
+      - run: sudo apt-get install -y -qq pandoc libreoffice-writer libreoffice-script-provider-python
       - run: uv sync --group dev
       - run: uv run pytest -q
