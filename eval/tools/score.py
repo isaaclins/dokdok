@@ -36,11 +36,15 @@ def score_run(scen_name: str, run_dir: Path) -> dict:
     leakfile = SCEN / scen_name / "leak.txt"
     forbidden = [l.strip() for l in leakfile.read_text(encoding="utf-8").splitlines() if l.strip()] if leakfile.exists() else []
     leaks = {}
+    attribution = re.compile(r"\b(stil|style|vorlage|template|layout|look|gestaltung|formatierung|referenz|reference)\b", re.I)
     for f in docx:
-        t = plain(f).lower()
-        for w in forbidden:
-            if w.lower() in t:
-                leaks[w] = leaks.get(w, 0) + t.count(w.lower())
+        for line in plain(f).splitlines():
+            if attribution.search(line):      # "style taken from X's document" is honest, not a leak
+                continue
+            low = line.lower()
+            for w in forbidden:
+                if w.lower() in low:
+                    leaks[w] = leaks.get(w, 0) + low.count(w.lower())
     meta["leaks"] = leaks
     meta["clean"] = (len(leaks) == 0)
     # pages
@@ -61,12 +65,15 @@ def score_run(scen_name: str, run_dir: Path) -> dict:
     meta["hints"] = any(b'w:styleId="Hint"' in zipfile.ZipFile(f).read("word/styles.xml") for f in docx) if docx else False
     # produced anything at all
     meta["produced"] = bool(docx)
+    meta["asked"] = (not docx) and bool(re.search(r"\?\s*$", ans.strip().splitlines()[-2] if len(ans.strip().splitlines()) > 1 else "", re.M)) \
+        or (not docx and bool(re.search(r"(wie möchtest du|brauche ich noch|which do you|could you tell me|frage an dich|\?$)", ans, re.I | re.M)))
+    meta["quota"] = "usage limit" in ans
     return meta
 
 
 def main():
     rows = []
-    for scen in sorted(RESULTS.iterdir()) if RESULTS.exists() else []:
+    for scen in sorted(d for d in RESULTS.iterdir() if d.is_dir()) if RESULTS.exists() else []:
         for run in sorted(scen.iterdir()):
             if run.is_dir():
                 rows.append((scen.name, run.name, score_run(scen.name, run)))
@@ -81,7 +88,8 @@ def main():
         out.append("|---|---|---|---|---|---|---|---|---|---|")
         for r, m in runs:
             tick = lambda b: "✓" if b else "✗"
-            out.append(f"| {r} | {m['engine']}/{m['model']} | {tick(m['produced'])} | {tick(m['style_kept'])} | "
+            status = "quota" if m["quota"] else ("asked" if m["asked"] else ("✓" if m["produced"] else "✗"))
+            out.append(f"| {r} | {m['engine']}/{m['model']} | {status} | {tick(m['style_kept'])} | "
                        f"{tick(m['clean'])} | {tick(m['docx_ok'])} | {tick(m['hints'])} | {m['pages']} | {m['seconds']} | "
                        f"{', '.join(f'{k}×{v}' for k,v in m['leaks'].items()) or '—'} |")
         # pair agreement

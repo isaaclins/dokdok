@@ -1,0 +1,164 @@
+name: sfgz-va
+title: Vertiefungsarbeit (SfGZ, im Stil von Lias VA)
+lang: de-CH
+toc_title: Inhaltsverzeichnis
+number_sections: false
+hints: visible
+hint_label: Hinweis
+page_breaks: true
+title_page: sections/title.md
+spelling:
+  no_eszett: true
+
+sections:
+  - id: einleitung
+    title: Einleitung
+    required: true
+    subsections:
+      - Themenwahl und persönlicher Bezug
+      - Ziel und Fragestellungen
+      - Vorgehen und Methoden
+      - Aufbau der Arbeit
+    words: { min: 300, max: 450 }
+    hint: |
+      Die Einleitung schreibst du ganz am Schluss fertig, wenn du weisst, wie die Arbeit
+      wirklich entstanden ist – sie ist inhaltlich fast identisch mit deinem Konzept, nur
+      im Rückblick formuliert. Bewertet werden: persönlicher Bezug und Motivation (0.5 P.),
+      klar ausformulierte Fragestellung/Ziele (1 P.), Methoden und Vorgehen (0.5 P.).
+      Umfang ca. 300–450 Wörter.
+
+  - id: kulturtechnik
+    title: Häkeln als Kulturtechnik im Wandel der Zeit
+    required: true
+    subsections:
+      - Was ist eine Kulturtechnik?
+      - Häkeln im 19. Jahrhundert – Ursprung und Verbreitung
+      - Häkeln im 20. Jahrhundert – Rückgang und Nischendasein
+      - Häkeln heute – Wiederentdeckung durch Social Media
+    words: { min: 500, max: 750 }
+    hint: |
+      Hauptteil, Fragestellung 1 (ABU-Aspekt Kultur): «Wie hat sich die Rolle des Häkelns
+      als Kulturtechnik in den letzten 200 Jahren verändert?» Methoden: Medienrecherche und
+      Interview. Jede recherchierte Information braucht einen Quellenverweis in Klammern,
+      z. B. `(Autor, Jahr, S. xx)` oder `(www.beispiel.ch, Unterseite)`. Wörtliche Zitate in
+      «Anführungszeichen» – zitierter Anteil insgesamt max. ein Sechstel der ganzen Arbeit.
+
+  - id: produkte
+    title: Häkelprodukte früher und heute
+    required: true
+    subsections:
+      - Kleidung und Gebrauchsgegenstände im 19./20. Jahrhundert
+      - Häkeln als Erwerbstätigkeit oder Freizeitbeschäftigung?
+      - Accessoires und Dekoration – der heutige Fokus
+      - Vergleich – was hat sich verändert und warum?
+    words: { min: 500, max: 750 }
+    hint: |
+      Hauptteil, Fragestellung 2 (ABU-Aspekt Kultur/Technik): «Welche Produkte wurden
+      früher hergestellt, und welche stehen heute im Fokus?» Methoden: Medienrecherche und
+      Interview (z. B. Fragen zu Erwerbsarbeit vs. Freizeit, Produkten früher/heute).
+      Verknüpfe die Rechercheergebnisse mit den Aussagen aus dem Interview.
+
+  - id: geschlechterrollen
+    title: Vom Frauenhandwerk zum Hobby aller Geschlechter
+    required: true
+    subsections:
+      - Häkeln als «weibliche» Tätigkeit im 19./20. Jahrhundert
+      - Der Wandel – Männer entdecken das Häkeln
+      - Die Rolle von Internet und Social Media
+      - Häkeln in Protestbewegungen
+    words: { min: 500, max: 750 }
+    hint: |
+      Hauptteil, Fragestellung 3 (ABU-Aspekt Identität & Sozialisation): «Wie kam es zur
+      Verschiebung von einer ‹weiblichen› Tätigkeit zu einem Hobby aller Geschlechter?»
+      Methode: Interview (ergänzt mit Recherche). Ordne die Erkenntnisse aus dem Interview
+      den Fragen 1–3 und 10 aus dem Interviewleitfaden zu.
+
+  - id: interview
+    title: Interview mit [Name der Interviewpartnerin]
+    required: true
+    subsections:
+      - Porträt der Interviewpartnerin
+      - Das Interview
+      - Auswertung des Interviews
+    words: { min: 350, max: 600 }
+    hint: |
+      Laut Leitfaden: Interviewperson einleitend kurz porträtieren (Alter, Ausbildung,
+      Funktion/Universität, Forschungsschwerpunkt) und aufzeigen, weshalb sie etwas zu
+      deinem Thema zu sagen hat. Interview als Fliesstext oder Frage-Antwort abbilden.
+      Zum Schluss auswerten: die wichtigsten Erkenntnisse in Bezug auf deine drei
+      Fragestellungen in mindestens vier Sätzen zusammenfassen. Vollständiges Transkript
+      und Tonaufnahme kommen in den Anhang.
+
+  - id: schlusswort
+    title: Schlusswort
+    required: true
+    subsections:
+      - Beantwortung der Fragestellungen
+      - Weitere Erkenntnisse und persönliches Fazit
+      - Ausblick
+    words: { min: 300, max: 450 }
+    hint: |
+      Bewertet wird: Zusammenfassung der Ergebnisse und Lernfortschritte (Gesamtschau,
+      2 P.). Beantworte jede der drei Fragestellungen sowie die Leitfrage in wenigen
+      Sätzen, formuliere weitere Erkenntnisse und persönliches Fazit, gib einen Ausblick,
+      was zum Thema noch zu erforschen wäre.
+
+  - id: quellen
+    title: Quellenverzeichnis
+    required: true
+    subsections:
+      - Printmedien
+      - Internetquellen
+      - Interview
+      - Abbildungen
+      - KI-Tools
+    hint: |
+      Nach Quellenarten unterteilt, innerhalb jeder Art alphabetisch. Jede Quelle, die im
+      Text als Quellenverweis vorkommt, muss hier stehen – und umgekehrt.
+      Printmedien: `Name Vorname (Jahr): Titel, Verlag, Ort.`
+      Internetquellen: vollständige URL + Abrufdatum, z. B.
+      `https://www.beispiel.ch/seite [abgerufen am TT.MM.JJJJ]`.
+      Interview: `Nachname Vorname (Datum): Interview zu <Thema>, geführt von Kaya
+      [Nachname]. Transkript siehe Anhang.`
+      Abbildungen: Beschreibung, Quelle/URL, Abrufdatum – oder «eigene Aufnahme».
+      KI-Tools: Name und Version des Tools, Verwendungszweck, z. B. `ChatGPT, Version
+      4o-mini: genutzt zur Ideengenerierung für die Interviewfragen.` Die Schule verlangt,
+      dass jede KI-Nutzung deklariert wird; das ausführliche Prompt-Protokoll gehört ins
+      Kapitel «KI-Protokoll» weiter unten.
+
+  - id: ki-protokoll
+    title: KI-Protokoll (Prompts)
+    generated: ai-log
+    hint: |
+      Automatisch aus deinem KI-Log erstellt. Trage jede Anfrage an ein KI-Tool mit
+      `dokdok log --tool "<Tool>" "<Prompt/Zweck>" --outcome "<was du damit gemacht
+      hast>"` ein. Die Schule kann diese Chatverläufe einfordern.
+
+  - id: abbildungen
+    title: Abbildungsverzeichnis
+    generated: figures
+    hint: |
+      Wird automatisch aus den Bildunterschriften im Fliesstext erstellt. Falls du keine
+      Abbildungen verwendest, dieses Kapitel weglassen.
+
+  - id: anhang
+    title: Anhang
+    required: true
+    subsections:
+      - Interviewfragen und Transkript
+      - Eigenständigkeitserklärung
+      - Einverständniserklärung
+    hint: |
+      Pflicht: Eigenständigkeitserklärung und Einverständniserklärung der
+      Interviewpartnerin. Bei Nichtabgabe des verwendeten Materials (Tonaufnahme des
+      Interviews, Interviewfragebogen) gibt es bis zu 6 Punkte Abzug.
+
+checks:
+  - every_citation_resolves
+  - every_source_cited
+  - every_figure_has_caption
+  - no_placeholders_in_final
+
+targets:
+  default:
+    format: docx

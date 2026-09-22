@@ -28,7 +28,7 @@ echo "exit=$? engine=$ENGINE model=$MODEL seconds=$(( $(date +%s) - start ))" >>
 find "$W" -path '*/out/*.docx' -not -name '.*' | while IFS= read -r f; do
   cp "$f" "$OUT/"; DOKDOK_HOME="$W/home" "$REPO/.venv/bin/python" -c "from pathlib import Path;from dokdok.render import docx_to_pdf;docx_to_pdf(Path('$OUT/$(basename "$f")'))" 2>>"$OUT/antwort.txt" || true
 done
-find "$W" -name doctype.yaml -not -path '*/schule/*' | head -1 | while IFS= read -r f; do
+find "$W" -name doctype.yaml | head -1 | while IFS= read -r f; do
   d=$(dirname "$f"); mkdir -p "$OUT/doctype"; cp -r "$d/." "$OUT/doctype/" 2>/dev/null
   DOKDOK_HOME="$W/home" dokdok types lint "$d" > "$OUT/lint.txt" 2>&1
 done

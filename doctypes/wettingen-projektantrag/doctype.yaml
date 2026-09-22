@@ -1,0 +1,76 @@
+name: wettingen-projektantrag
+title: Projektantrag Projektförderung – Gemeinde Wettingen
+lang: de-CH
+spelling:
+  no_eszett: true
+number_sections: true
+title_page: sections/title.md
+
+sections:
+  - id: ausgangslage
+    title: Ausgangslage
+    required: true
+    hint: |
+      Ausgangssituation und Begründung, weshalb das Projekt nötig ist (Richtlinie Punkt 1).
+      Woraus entsteht der Bedarf, was fehlt heute in Wettingen.
+  - id: projektziele
+    title: Projektziele
+    required: true
+    hint: |
+      Konkrete, nachvollziehbare Ziele (Punkt 2). Als Liste, ein Ziel pro Zeile,
+      mit fettem Stichwort wie im Beispielantrag.
+  - id: zielgruppe
+    title: Zielgruppe
+    required: true
+    hint: |
+      Wer soll erreicht werden (Punkt 3). Pflichtangabe laut Richtlinie: erwartete
+      Teilnehmerzahl explizit nennen.
+  - id: projektbeschrieb
+    title: Projektbeschrieb
+    required: true
+    hint: |
+      Ablauf, Inhalt und Umfang des Anlasses (Punkt 4): Programm über den Tag,
+      wer macht was, Auf-/Abbau, Schlechtwettervariante falls relevant.
+  - id: termin-ort
+    title: Termin und Ort
+    required: true
+    subsections: []
+    hint: |
+      Datum, Zeit, Ort, allfälliges Verschiebedatum (Punkt 5). Das Datum muss
+      mindestens acht Wochen nach Einreichung liegen (Eingabefrist der Richtlinie) –
+      sonst als offene Frage kennzeichnen statt ein ungültiges Datum einzusetzen.
+  - id: budget
+    title: Budget
+    required: true
+    hint: |
+      Vollständige Tabelle Einnahmen/Ausgaben (Punkt 6), je Position einzeln
+      nachvollziehbar. Zwingend laut Richtlinie: Total Einnahmen = Total Ausgaben
+      (Saldo CHF 0), Gemeindebeitrag als eigene Position und max. 50 % der
+      Gesamtkosten, "Unvorhergesehenes" max. 10 % des Ausgabentotals. Nie Zahlen
+      erfinden oder stillschweigend glätten – Anpassungen gegenüber der Vorlage
+      des Antragstellers immer offen kommentieren.
+  - id: organisation
+    title: Organisation und Verantwortliche
+    required: true
+    hint: |
+      Trägerschaft, Projektleitung und Rollen im Organisationsteam (Punkt 7).
+      Bei nicht eingetragener Gruppe: volljährige, verantwortliche Ansprechperson
+      benennen (Richtlinie "Wer kann ein Gesuch stellen").
+  - id: nachhaltigkeit
+    title: Nachhaltigkeit
+    required: true
+    hint: |
+      Wiederholbarkeit, Wirkung und langfristige Bedeutung (Punkt 8).
+  - id: kontakt
+    title: Kontakt
+    required: true
+    hint: |
+      Vollständige Kontaktangaben der verantwortlichen Person (Punkt 9): Name,
+      Adresse, Telefon, E-Mail.
+
+checks:
+  - no_placeholders_in_final
+
+targets:
+  default:
+    format: docx
