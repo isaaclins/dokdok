@@ -7,7 +7,7 @@ from pathlib import Path
 
 import yaml
 
-from . import __version__, check as checkmod, doctype as dt, project as prj, render as rnd
+from . import __version__, check as checkmod, doctype as dt, fromdocx, project as prj, render as rnd
 
 MECHANICAL_RULES = """
 ## dokdok (mechanical rules — generated, do not edit)
@@ -119,6 +119,17 @@ def cmd_types_lint(a):
     print(f"  ✔ {d.name}: {len(d.sections)} sections, {len(d.checks)} checks")
 
 
+def cmd_types_from_docx(a):
+    dest = Path(a.dest).resolve() if a.dest else dt.HOME_TYPES
+    path, ol = fromdocx.create(Path(a.docx).resolve(), dest, name=a.name, lang=a.lang)
+    print(f"✔ {path}")
+    print(f"  {len(ol.sections)} sections from the heading outline, "
+          f"{sum(len(s['hints']) for s in ol.sections)} hints from placeholder text")
+    for n in ol.notes:
+        print(f"  ⚠ {n}")
+    print("  next: edit doctype.yaml + AGENTS.md, then `dokdok types lint` and a smoke render")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="dokdok")
     ap.add_argument("--version", action="version", version=__version__)
@@ -147,6 +158,10 @@ def main(argv=None):
     t = sub.add_parser("types", help="manage doctypes").add_subparsers(dest="tcmd", required=True)
     s = t.add_parser("list"); s.set_defaults(fn=cmd_types_list)
     s = t.add_parser("lint"); s.add_argument("path", nargs="?", default="."); s.set_defaults(fn=cmd_types_lint)
+    s = t.add_parser("from-docx", help="create a doctype from a Word file you like")
+    s.add_argument("docx"); s.add_argument("--name"); s.add_argument("--dest", help="parent folder (default ~/.dokdok/doctypes)")
+    s.add_argument("--lang", default="de-CH")
+    s.set_defaults(fn=cmd_types_from_docx)
 
     a = ap.parse_args(argv)
     a.fn(a)
