@@ -30,8 +30,9 @@ Or let your agent do it — paste this into Claude Code, Codex or pi:
     ├─ filters/         optional pandoc lua filters
     └─ skills/          optional agent skills shipped with the type
 
-Bundled: `school-thesis` (vocational-school thesis), `school-thesis-de` (same, German) and
-`pentest-report` (two targets: `exec` and `blue-team` from the same findings).
+Bundled: `school-thesis` (vocational-school thesis), `school-thesis-de` (same, German),
+`ipa` (Swiss IT apprenticeship final project, IPERKA, daily journal) and `pentest-report`
+(two targets: `exec` and `blue-team` from the same findings).
 
 Make one from a Word file you like: `dokdok types from-docx file.docx`.
 Install one: `dokdok add <folder-or-git-url>`.
@@ -39,6 +40,7 @@ Install one: `dokdok add <folder-or-git-url>`.
 ## Commands
 
     dokdok new <name> --type <doctype>     project from a doctype
+    dokdok entry <section> [--date] [--title]  add an entry to a repeat section (journal day)
     dokdok check [--final]                 lint against the doctype's rules
     dokdok render [target] [--pdf]         docx by default; pdf via LibreOffice
     dokdok add <source>                    install a doctype

@@ -14,6 +14,7 @@ MECHANICAL_RULES = """
 
 - One markdown file per section in `doc/`, named `NN-<section-id>.md`, front matter `section: <id>`.
 - Section titles come from the doctype; start your headings at `##`.
+- Repeat sections (e.g. a daily journal) are folders: `doc/<id>/YYYY-MM-DD.md`, one file per entry, created with `dokdok entry <id> --date YYYY-MM-DD`. Inside an entry, start headings at `##`; dokdok nests them under the entry.
 - `<!-- dokdok:hint … -->` comments are guidance from the doctype. Read them, then delete them when the section is written.
 - Cite with `[@id]`; every id must exist in `sources.yaml` (CSL YAML under `references:`).
 - Figures: `![Caption](path)` — caption is mandatory. Tables: pipe tables with a `Table: caption` line.
@@ -37,6 +38,9 @@ def cmd_new(a):
     tpl_dir = doc.path / "sections"
     for i, s in enumerate(doc.sections, 1):
         if s.generated:
+            continue
+        if s.repeat:
+            (root / "doc" / s.id).mkdir()
             continue
         tpl = tpl_dir / f"{s.id}.md"
         body = tpl.read_text(encoding="utf-8") if tpl.exists() else "".join(f"## {sub}\n\n" for sub in s.subsections)
@@ -75,6 +79,24 @@ def cmd_render(a):
     p = prj.load()
     for out in rnd.render(p, target=a.target, pdf=a.pdf):
         print(f"✔ {out.relative_to(p.root)}")
+
+
+def cmd_entry(a):
+    """Add one entry to a repeat section (e.g. a journal day) from the doctype's template."""
+    import datetime
+    p = prj.load()
+    spec = p.doctype.section(a.section)
+    if spec is None or not spec.repeat:
+        raise SystemExit(f"«{a.section}» is not a repeat section of {p.doctype.name}")
+    day = a.date or datetime.date.today().isoformat()
+    f = p.root / "doc" / spec.id / f"{day}.md"
+    if f.exists():
+        raise SystemExit(f"{f.relative_to(p.root)} already exists")
+    tpl = p.doctype.path / "sections" / f"{spec.id}.md"
+    body = tpl.read_text(encoding="utf-8") if tpl.exists() else ""
+    f.parent.mkdir(exist_ok=True)
+    f.write_text(f"---\ntitle: {a.title or day}\ndate: {day}\n---\n\n{body}", encoding="utf-8")
+    print(f"✔ {f.relative_to(p.root)}")
 
 
 def cmd_log(a):
@@ -162,6 +184,10 @@ def main(argv=None):
     s.add_argument("target", nargs="?", default="default")
     s.add_argument("--pdf", action="store_true", help="also convert docx → pdf")
     s.set_defaults(fn=cmd_render)
+
+    s = sub.add_parser("entry", help="add an entry to a repeat section (journal day)")
+    s.add_argument("section"); s.add_argument("--date", help="YYYY-MM-DD, default today"); s.add_argument("--title")
+    s.set_defaults(fn=cmd_entry)
 
     s = sub.add_parser("log", help="record an AI-usage entry (rendered by a `generated: ai-log` section)")
     s.add_argument("purpose"); s.add_argument("--tool", required=True); s.add_argument("--outcome")

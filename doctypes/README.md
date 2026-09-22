@@ -30,12 +30,22 @@ sections:                       # rendered in this order
     hint: |                     # shown as <!-- dokdok:hint --> in the new file
       Guidance for the writer.
     only_for: [blue-team]       # rendered only in targets with that audience
+  - id: journal
+    title: Arbeitsjournal
+    repeat: daily               # doc/journal/YYYY-MM-DD.md, one ## per file (`dokdok entry journal`)
+    entry_title: "{title} – {date}"
   - id: quellen
     title: Quellenverzeichnis
     generated: sources          # from sources.yaml (CSL YAML, cited as [@id])
   - id: ki-protokoll
     title: KI-Protokoll
     generated: ai-log           # from ai-log.yaml (`dokdok log`)
+  - id: glossar
+    title: Begriffserklärung
+    generated: glossary         # from glossary.yaml (term, definition)
+  - id: abbildungen
+    title: Abbildungsverzeichnis
+    generated: figures          # numbered captions in document order; also: tables
 
 checks:                         # which rules `dokdok check` applies
   - every_citation_resolves     # [@id] must exist in sources.yaml

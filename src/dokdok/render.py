@@ -27,14 +27,54 @@ def assemble(p: Project, target: str = "default") -> str:
         if spec.generated == "ai-log":
             parts.append(f"# {spec.title}\n\n{ailog.table(p.root, p.doctype.lang)}\n")
             continue
+        if spec.generated == "glossary":
+            rows = [f"| {g['term']} | {g['definition']} |" for g in sorted(p.glossary(), key=lambda g: g["term"].lower())]
+            parts.append(f"# {spec.title}\n\n| | |\n|---|---|\n" + "\n".join(rows) + "\n\n")
+            continue
+        if spec.generated in ("figures", "tables"):
+            parts.append(f"# {spec.title}\n\n" + _caption_list(p, spec.generated, audience) + "\n\n")
+            continue
         sf = p.section(spec.id)
         if sf is None:
+            continue
+        if spec.repeat:
+            parts.append(f"# {spec.title}\n\n")
+            for e in sf.entries:
+                head = spec.entry_title.format(title=e.meta.get("title", e.path.stem), date=e.meta.get("date", e.path.stem))
+                parts.append(f"## {head}\n\n{_shift(e.text.strip())}\n\n")
             continue
         parts.append(f"# {spec.title}\n\n{sf.text.strip()}\n\n")
     md = "".join(parts)
     if audience:
         md = _filter_audience(md, audience)
     return md
+
+
+LABELS = {"de": ("Abbildung", "Tabelle"), "en": ("Figure", "Table"), "fr": ("Figure", "Tableau"), "it": ("Figura", "Tabella")}
+
+
+def _caption_list(p: Project, kind: str, audience) -> str:
+    """Numbered list of figure or table captions in document order (no page numbers)."""
+    import re
+    pat = re.compile(r"!\[(.+?)\]\(") if kind == "figures" else re.compile(r"^Table:\s*(.+)$", re.M)
+    label = LABELS.get(p.doctype.lang[:2], LABELS["en"])[0 if kind == "figures" else 1]
+    caps = []
+    for spec in p.doctype.sections:
+        if spec.generated or (spec.only_for and audience not in spec.only_for):
+            continue
+        sf = p.section(spec.id)
+        if sf is None:
+            continue
+        for src in (sf.entries or [sf]):
+            text = _filter_audience(src.text, audience) if audience else src.text
+            caps += pat.findall(text)
+    return "\n".join(f"{label} {i}: {c}  " for i, c in enumerate(caps, 1)) or "–"
+
+
+def _shift(md: str) -> str:
+    """Demote headings one level (entries sit under their own ##)."""
+    import re
+    return re.sub(r"^(#{1,5}) ", r"#\1 ", md, flags=re.M)
 
 
 def _filter_audience(md: str, audience: str) -> str:

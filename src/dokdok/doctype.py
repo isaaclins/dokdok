@@ -17,8 +17,10 @@ class Section:
     subsections: list[str] = field(default_factory=list)
     words: dict = field(default_factory=dict)
     hint: str = ""
-    generated: str | None = None   # "sources" | "figures" | None
+    generated: str | None = None   # "sources" | "ai-log" | "glossary" | "figures" | "tables"
     only_for: list[str] = field(default_factory=list)
+    repeat: str | None = None      # "daily": doc/<id>/YYYY-MM-DD.md, one ## per file, sorted by date
+    entry_title: str = "{title}"   # heading for repeat entries; {title} {date} from the entry's front matter
 
 
 @dataclass

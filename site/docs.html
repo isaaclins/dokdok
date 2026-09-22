@@ -39,6 +39,7 @@ dokdok doctor</code></pre>
     <tr><td><code>dokdok new &lt;name&gt; --type &lt;doctype&gt;</code></td><td>create a project from a doctype (<code>--title</code>, <code>--author</code>)</td></tr>
     <tr><td><code>dokdok check [--final]</code></td><td>lint the project against its doctype; <code>--final</code> also rejects placeholders and leftover hints</td></tr>
     <tr><td><code>dokdok render [target] [--pdf]</code></td><td>render into <code>out/</code>; docx by default, PDF via LibreOffice</td></tr>
+    <tr><td><code>dokdok entry &lt;section&gt; [--date D] [--title T]</code></td><td>add an entry to a repeat section, e.g. a journal day</td></tr>
     <tr><td><code>dokdok log --tool T "purpose" [--outcome O]</code></td><td>append to the AI usage log</td></tr>
     <tr><td><code>dokdok add &lt;folder-or-git-url&gt;</code></td><td>install a doctype into <code>~/.dokdok/doctypes/</code></td></tr>
     <tr><td><code>dokdok types list</code></td><td>doctypes available</td></tr>
@@ -109,9 +110,19 @@ sections:
     subsections: [Topic and personal motivation, Aim and research questions]
     words: { min: 300, max: 450 }
     hint: Finish this last.
+  - id: journal
+    title: Work journal
+    repeat: daily               # doc/journal/YYYY-MM-DD.md, one ## per file
+    entry_title: "{title} – {date}"
   - id: references
     title: References
     generated: sources          # from sources.yaml
+  - id: glossary
+    title: Glossary
+    generated: glossary         # from glossary.yaml (term, definition)
+  - id: figures
+    title: List of figures
+    generated: figures          # numbered captions; also: tables
   - id: ai-log
     title: AI usage log
     generated: ai-log           # from ai-log.yaml

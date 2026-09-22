@@ -33,9 +33,13 @@ def run(p: Project, final: bool = False) -> list[Finding]:
         if spec.generated:
             continue
         sf = p.section(spec.id)
-        if sf is None:
+        if sf is None or (spec.repeat and not sf.entries):
             if spec.required:
-                out.append(Finding("doc/", "error", f"required section «{spec.title}» ({spec.id}) missing"))
+                out.append(Finding("doc/", "error", f"required section «{spec.title}» ({spec.id}) missing"
+                                   + (" (no entries yet — `dokdok entry`)" if spec.repeat else "")))
+            continue
+        if spec.repeat:
+            out.append(Finding(rel(sf.path) + "/", "ok", f"{len(sf.entries)} entries"))
             continue
         f = rel(sf.path)
         text = sf.text
@@ -54,7 +58,7 @@ def run(p: Project, final: bool = False) -> list[Finding]:
             out.append(Finding(f, "warn", f"{n} words (target {lo or '…'}–{hi})"))
 
     # file-level checks
-    for sf in p.sections:
+    for sf in [s for s in p.sections if not s.entries] + [e for s in p.sections for e in s.entries]:
         f = rel(sf.path)
         text = sf.text
         if p.doctype.section(sf.id) is None:

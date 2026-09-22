@@ -1,5 +1,5 @@
 """A project: dokdok.yaml + doc/*.md + sources.yaml."""
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 import re
 import yaml
@@ -15,6 +15,8 @@ class SectionFile:
     path: Path
     id: str
     body: str        # markdown without front matter, hints kept
+    meta: dict = field(default_factory=dict)
+    entries: list["SectionFile"] = field(default_factory=list)   # for repeat sections: one per file
 
     @property
     def text(self) -> str:
@@ -42,6 +44,10 @@ class Project:
     def section(self, sid: str) -> SectionFile | None:
         return next((s for s in self.sections if s.id == sid), None)
 
+    def glossary(self) -> list[dict]:
+        f = self.root / "glossary.yaml"
+        return (yaml.safe_load(f.read_text(encoding="utf-8")) or []) if f.exists() else []
+
 
 def find_root(start: Path | None = None) -> Path:
     p = (start or Path.cwd()).resolve()
@@ -62,10 +68,18 @@ def load(start: Path | None = None) -> Project:
     doc = dt.load(ref)
     sections = []
     for f in sorted((root / "doc").glob("*.md")):
-        raw = f.read_text(encoding="utf-8")
-        m = FRONT.match(raw)
-        meta = yaml.safe_load(m.group(1)) if m else {}
-        body = raw[m.end():] if m else raw
-        sid = (meta or {}).get("section") or f.stem.split("-", 1)[-1]
-        sections.append(SectionFile(path=f, id=sid, body=body))
+        sections.append(_read(f))
+    for spec in doc.sections:                       # repeat sections live in doc/<id>/*.md
+        d = root / "doc" / spec.id
+        if spec.repeat and d.is_dir():
+            entries = [_read(f, sid=spec.id) for f in sorted(d.glob("*.md"))]
+            sections.append(SectionFile(path=d, id=spec.id, body="", entries=entries))
     return Project(root=root, config=cfg, doctype=doc, sections=sections)
+
+
+def _read(f: Path, sid: str | None = None) -> SectionFile:
+    raw = f.read_text(encoding="utf-8")
+    m = FRONT.match(raw)
+    meta = (yaml.safe_load(m.group(1)) if m else {}) or {}
+    body = raw[m.end():] if m else raw
+    return SectionFile(path=f, id=sid or meta.get("section") or f.stem.split("-", 1)[-1], body=body, meta=meta)

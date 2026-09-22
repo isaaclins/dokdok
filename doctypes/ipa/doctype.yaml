@@ -1,0 +1,98 @@
+# IPA – individuelle praktische Arbeit (Informatik EFZ, Schweiz), IPERKA. Section titles are the
+# ones the examiners expect, hence German; the hints are for the candidate.
+name: ipa
+title: IPA – Individuelle praktische Arbeit (IPERKA)
+lang: de-CH
+spelling:
+  no_eszett: true
+
+sections:
+  - id: vorwort
+    title: Vorwort
+    required: true
+    words: { max: 400 }
+    hint: Kurz – Anlass, Dank, Lesehinweise. Keine Inhalte aus Teil 1 oder 2 wiederholen.
+
+  - id: aufgabenstellung
+    title: Detaillierte Aufgabenstellung
+    required: true
+    subsections: [Ausgangslage, Erwartete Resultate, Messbare Ziele, Mittel und Methoden, Deklaration der Vorkenntnisse, Deklaration der Vorarbeiten, Neue Lerninhalte]
+    hint: Wortlaut aus der Aufgabenstellung übernehmen, nicht umformulieren. Messbare Ziele nummerieren (Z1, Z2 …).
+  - id: projektorganisation
+    title: Projektorganisation
+    required: true
+    subsections: [Organigramm, Rollen und Aufgaben]
+  - id: firmenstandards
+    title: Deklaration der Firmenstandards
+    required: true
+    subsections: [Dokumentationsvorlage, Coding-Standards, Testing]
+  - id: arbeitsorganisation
+    title: Arbeitsorganisation
+    required: true
+    subsections: [Arbeitsplatz, Datensicherung, Rapportierung]
+  - id: zeitplan
+    title: Zeitplan
+    required: true
+    hint: Soll/Ist pro Phase als Tabelle. Abweichungen begründen.
+
+  - id: informieren
+    title: "Projektphase: Informieren"
+    required: true
+    subsections: [Ist-Analyse, Soll-Analyse, Anforderungskatalog]
+    hint: Anforderungen nummerieren (FA01 …, NFA01 …) – die Kontrollphase verweist darauf.
+  - id: planen
+    title: "Projektphase: Planen"
+    required: true
+    subsections: [Aktivitätsdiagramm, Teststrategie]
+  - id: entscheiden
+    title: "Projektphase: Entscheiden"
+    required: true
+    subsections: [Entscheidungskriterien, Entscheidungsmatrix]
+    hint: Jede Variante gegen dieselben Kriterien bewerten. Entscheid begründen, nicht nur ankreuzen.
+  - id: realisieren
+    title: "Projektphase: Realisieren"
+    required: true
+    words: { min: 1500 }
+    hint: Ein ## pro Arbeitspaket. Was, wie, warum so – mit Code-Ausschnitten nur wo sie etwas erklären.
+  - id: kontrollieren
+    title: "Projektphase: Kontrollieren"
+    required: true
+    subsections: [Testdurchführung, Testergebnisse, Grenzen der Tests]
+    hint: Jeder Test verweist auf eine Anforderung (FA/NFA). Fehlschläge nicht verstecken – dokumentieren.
+  - id: auswerten
+    title: "Projektphase: Auswerten"
+    required: true
+    subsections: [Zielerreichung, Abweichungen und offene Punkte, Verbesserungsmöglichkeiten, Persönliches Fazit]
+
+  - id: arbeitsjournal
+    title: Arbeitsjournal
+    required: true
+    repeat: daily
+    entry_title: "{title} – {date}"
+    hint: Ein Eintrag pro Arbeitstag. Ehrlich – Soll/Ist, was schiefging, welche Hilfe (auch KI) genutzt wurde.
+
+  - id: quellen
+    title: Quellenverzeichnis
+    generated: sources
+  - id: abbildungen
+    title: Abbildungsverzeichnis
+    generated: figures
+  - id: tabellen
+    title: Tabellenverzeichnis
+    generated: tables
+  - id: glossar
+    title: Begriffserklärung
+    generated: glossary
+  - id: ki
+    title: KI-Verzeichnis
+    generated: ai-log
+
+checks:
+  - every_citation_resolves
+  - every_source_cited
+  - every_figure_has_caption
+  - no_placeholders_in_final
+
+targets:
+  default: { format: docx }
+  web: { format: html }
