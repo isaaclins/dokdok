@@ -100,8 +100,11 @@ def docx_to_pdf(docx: Path) -> Path:
             raise SystemExit("LibreOffice hung. On macOS, open LibreOffice once by hand after installing "
                              "(Gatekeeper first-launch dialog), then retry.")
         if not pdf.exists():
+            log = pdf.with_suffix(".pdf.log")
+            detail = log.read_text() if log.exists() else (r.stderr or r.stdout)
             raise SystemExit("LibreOffice did not produce a PDF. On Debian/Ubuntu install "
-                             "libreoffice-script-provider-python.\n" + (r.stderr or r.stdout).strip())
+                             "libreoffice-script-provider-python.\n" + detail.strip())
+        pdf.with_suffix(".pdf.log").unlink(missing_ok=True)
         return pdf
     if platform.system() == "Darwin" and Path("/Applications/Microsoft Word.app").exists():
         script = f'''

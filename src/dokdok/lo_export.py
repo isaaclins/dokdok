@@ -10,6 +10,16 @@ def _pv(name, value):
 
 
 def export_pdf(*_):
+    try:
+        _export()
+    except Exception:
+        import traceback
+        with open(os.environ["DOKDOK_OUT"] + ".log", "w") as f:
+            f.write(traceback.format_exc())
+        raise
+
+
+def _export():
     ctx = uno.getComponentContext()
     desktop = ctx.ServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop", ctx)
     src = uno.systemPathToFileUrl(os.environ["DOKDOK_IN"])
