@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dokdok — docs</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+
+<header>
+  <p class="brand"><a href="./">dokdok</a> / docs</p>
+  <h1>Docs</h1>
+  <p class="lead">Everything the CLI does, on one page. If you only ever talk to your agent, you don't need this.</p>
+</header>
+
+<nav class="toc">
+  <a href="#install">Install</a> · <a href="#commands">Commands</a> · <a href="#project">Project layout</a> · <a href="#writing">Writing</a> · <a href="#doctypes">Doctypes</a> · <a href="#targets">Targets</a> · <a href="#agents">Agents</a> · <a href="#pdf">PDF</a>
+</nav>
+
+<section id="install">
+  <h2>Install</h2>
+  <p>Let an agent do it — paste this into Claude Code, Codex or pi:</p>
+  <pre><code>Install dokdok: read https://raw.githubusercontent.com/isaaclins/dokdok/main/install.md and follow it.</code></pre>
+  <p>By hand:</p>
+  <pre><code>uv tool install git+https://github.com/isaaclins/dokdok   # or: pipx install …
+brew install pandoc                                          # required
+brew install --cask libreoffice                              # for PDF; open it once on macOS
+dokdok doctor</code></pre>
+</section>
+
+<section id="commands">
+  <h2>Commands</h2>
+  <table>
+    <tr><td><code>dokdok new &lt;name&gt; --type &lt;doctype&gt;</code></td><td>create a project from a doctype (<code>--title</code>, <code>--author</code>)</td></tr>
+    <tr><td><code>dokdok check [--final]</code></td><td>lint the project against its doctype; <code>--final</code> also rejects placeholders and leftover hints</td></tr>
+    <tr><td><code>dokdok render [target] [--pdf]</code></td><td>render into <code>out/</code>; docx by default, PDF via LibreOffice</td></tr>
+    <tr><td><code>dokdok log --tool T "purpose" [--outcome O]</code></td><td>append to the AI usage log</td></tr>
+    <tr><td><code>dokdok add &lt;folder-or-git-url&gt;</code></td><td>install a doctype into <code>~/.dokdok/doctypes/</code></td></tr>
+    <tr><td><code>dokdok types list</code></td><td>doctypes available</td></tr>
+    <tr><td><code>dokdok types lint [folder]</code></td><td>validate a doctype</td></tr>
+    <tr><td><code>dokdok types from-docx file.docx</code></td><td>make a doctype from a Word file you like</td></tr>
+    <tr><td><code>dokdok doctor</code></td><td>check pandoc / LibreOffice / Word</td></tr>
+  </table>
+</section>
+
+<section id="project">
+  <h2>Project layout</h2>
+  <pre><code>thesis/
+├─ dokdok.yaml      doctype, title, author, optional targets
+├─ doc/
+│  ├─ 01-introduction.md
+│  ├─ 02-main-part.md
+│  └─ …             one file per section, in doctype order
+├─ sources.yaml     citations (CSL YAML), used as [@id]
+├─ ai-log.yaml      written by `dokdok log`
+├─ AGENTS.md        the document's rules — generated, read by every agent
+└─ out/             rendered files; never edit these</code></pre>
+</section>
+
+<section id="writing">
+  <h2>Writing</h2>
+  <p>A section file is plain markdown with one line of front matter:</p>
+  <pre><code>---
+section: introduction
+---
+
+&lt;!-- dokdok:hint
+Guidance from the doctype. Delete once the section is written.
+--&gt;
+
+## Topic and personal motivation
+
+Text with a citation [@survey2025] and a figure:
+
+![Winter cluster (source: own drawing)](img/cluster.svg)</code></pre>
+  <ul>
+    <li>The section title (<code>#</code>) comes from the doctype; start your headings at <code>##</code>.</li>
+    <li>Citations: <code>[@id]</code>. Every id must exist in <code>sources.yaml</code> under <code>references:</code> (CSL YAML — <code>id</code>, <code>type</code>, <code>title</code>, <code>author</code>, <code>issued</code>, <code>URL</code>…).</li>
+    <li>Figures need a caption. Tables: pipe tables followed by <code>Table: caption</code>.</li>
+    <li>Things only the human can supply: leave a visible <code>[placeholder]</code>. <code>check --final</code> finds them.</li>
+  </ul>
+</section>
+
+<section id="doctypes">
+  <h2>Doctypes</h2>
+  <p>A doctype is a folder. Only <code>doctype.yaml</code> is required.</p>
+  <pre><code>my-type/
+├─ doctype.yaml     structure, rules, checks, targets
+├─ reference.docx   styles, header/footer, logo, margins — edit in Word
+├─ AGENTS.md        writing rules, copied into every project
+├─ sections/id.md   starting content for a section (optional)
+├─ filters/*.lua    pandoc filters (optional)
+└─ skills/          agent skills shipped with the type (optional)</code></pre>
+  <pre><code>name: school-thesis
+title: School thesis
+lang: en                        # picks the TOC title; override with toc_title
+number_sections: true           # false if reference.docx heading styles number themselves
+spelling: { no_eszett: true }   # German: error on ß
+
+sections:
+  - id: introduction
+    title: Introduction
+    required: true
+    subsections: [Topic and personal motivation, Aim and research questions]
+    words: { min: 300, max: 450 }
+    hint: Finish this last.
+  - id: references
+    title: References
+    generated: sources          # from sources.yaml
+  - id: ai-log
+    title: AI usage log
+    generated: ai-log           # from ai-log.yaml
+  - id: remediation
+    title: Remediation plan
+    only_for: [blue-team]       # only in targets with that audience
+
+checks: [every_citation_resolves, every_source_cited, every_figure_has_caption, no_placeholders_in_final]
+
+targets:
+  default:   { format: docx }
+  blue-team: { format: docx, audience: blue-team }
+  web:       { format: html }</code></pre>
+  <h3>From a Word file you like</h3>
+  <pre><code>dokdok types from-docx template.docx --name my-school</code></pre>
+  <p>Keeps styles, numbering, header/footer and logo (the body is emptied into <code>reference.docx</code>), turns the heading outline into sections and grey or bracketed placeholder text into hints, and tells you what it couldn't carry over (body tables, images, text boxes). Then edit <code>doctype.yaml</code>, run <code>dokdok types lint</code>, and render a skeleton to compare with the original.</p>
+  <p>Fonts, heading styles, colours, numbering, header/footer, margins and page numbers round-trip. Free-form layouts (text boxes, magazine-style covers) don't — keep those as a static <code>cover.docx</code>.</p>
+</section>
+
+<section id="targets">
+  <h2>Targets and audiences</h2>
+  <p>One project, several outputs. A target sets the format and optionally an audience; sections with <code>only_for</code> and blocks like the one below are dropped for other audiences.</p>
+  <pre><code>::: {.only-for="blue-team"}
+**Remediation.** Add `Secure` in `config/session.php`, line 14.
+:::</code></pre>
+  <pre><code>dokdok render exec        # out/&lt;name&gt;-exec.docx
+dokdok render blue-team   # out/&lt;name&gt;-blue-team.docx</code></pre>
+</section>
+
+<section id="agents">
+  <h2>How agents know about dokdok</h2>
+  <p>Two layers. A global <strong>skill</strong> (<code>skills/dokdok/SKILL.md</code> in the repo) tells the agent when to reach for dokdok — the repo is a Claude Code plugin and a pi package, Codex users copy the folder. Inside a project, the generated <strong><code>AGENTS.md</code></strong> carries the doctype's rules, so any agent works there without the skill.</p>
+  <p>Agents are asked to run <code>dokdok check</code> before claiming they're done and to record their sessions with <code>dokdok log</code>.</p>
+</section>
+
+<section id="pdf">
+  <h2>PDF</h2>
+  <p><code>dokdok render --pdf</code> converts the docx with LibreOffice, updating the table of contents and page numbers first. On macOS, open LibreOffice once after installing so Gatekeeper stops blocking headless runs. Without LibreOffice, Word is used on macOS if it's installed and the screen is unlocked.</p>
+</section>
+
+<footer>
+  <p><a href="./">dokdok</a> · <a href="https://github.com/isaaclins/dokdok">GitHub</a> · MIT</p>
+</footer>
+
+</main>
+</body>
+</html>
