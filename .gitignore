@@ -10,3 +10,10 @@ __pycache__/
 out/
 eval/results/*/
 !eval/results/report.md
+
+# agents must not save doctypes into the bundled folder; anything not bundled is ignored
+doctypes/*/
+!doctypes/school-thesis/
+!doctypes/school-thesis-de/
+!doctypes/ipa/
+!doctypes/pentest-report/

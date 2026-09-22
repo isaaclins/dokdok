@@ -26,19 +26,25 @@ _claude/sonnet pair agreement: 5/5 checklist items_
 | codex-b | codex/default | ✓ | ✓ | ✓ | ✓ | ✓ | 24 | 831 | — |
 | opus-a | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 20 | 684 | — |
 | opus-b | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 19 | 585 | — |
-| sonnet-a | ?/? | ✗ | ✗ | ✓ | ✗ | ✗ | 0 | None | — |
+| sonnet-a | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 14 | 439 | — |
 | sonnet-b | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 13 | 1109 | — |
 
 _codex/default pair agreement: 4/5 checklist items_
 
 _claude/opus pair agreement: 5/5 checklist items_
 
+_claude/sonnet pair agreement: 5/5 checklist items_
+
 ## 2-nadia-pentest-pdfonly
 
 | run | engine/model | produced | style | clean | docx ok | hints | pages | secs | leaks |
 |---|---|---|---|---|---|---|---|---|---|
 | opus-a | claude/opus | ✗ | ✗ | ✓ | ✗ | ✗ | 0 | 842 | — |
+| opus-b | ?/? | ✗ | ✗ | ✓ | ✗ | ✗ | 0 | None | — |
 | sonnet-a | claude/sonnet | ✓ | ✗ | ✓ | ✓ | ✓ | 14 | 654 | — |
+| sonnet-b | ?/? | ✗ | ✗ | ✓ | ✗ | ✗ | 0 | None | — |
+
+_?/? pair agreement: 5/5 checklist items_
 
 ## 3-ben-thesis
 
@@ -79,7 +85,11 @@ _claude/sonnet pair agreement: 5/5 checklist items_
 | run | engine/model | produced | style | clean | docx ok | hints | pages | secs | leaks |
 |---|---|---|---|---|---|---|---|---|---|
 | opus-a | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 2 | 587 | — |
+| opus-b | ?/? | ✗ | ✗ | ✓ | ✗ | ✗ | 0 | None | — |
 | sonnet-a | claude/sonnet | ✓ | ✗ | ✓ | ✓ | ✓ | 2 | 242 | — |
+| sonnet-b | claude/sonnet | ✓ | ✗ | ✓ | ✓ | ✓ | 3 | 57 | — |
+
+_claude/sonnet pair agreement: 5/5 checklist items_
 
 ## 5-samir-antrag
 
@@ -89,11 +99,11 @@ _claude/sonnet pair agreement: 5/5 checklist items_
 | codex-b | codex/default | ✓ | ✓ | ✓ | ✓ | ✓ | 8 | 371 | — |
 | opus-a | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 6 | 369 | — |
 | opus-b | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 7 | 405 | — |
-| sonnet-a | ?/? | ✗ | ✗ | ✓ | ✗ | ✗ | 0 | None | — |
-| sonnet-b | ?/? | ✗ | ✗ | ✓ | ✗ | ✗ | 0 | None | — |
+| sonnet-a | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 12 | 202 | — |
+| sonnet-b | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 11 | 242 | — |
 
 _codex/default pair agreement: 5/5 checklist items_
 
 _claude/opus pair agreement: 5/5 checklist items_
 
-_?/? pair agreement: 5/5 checklist items_
+_claude/sonnet pair agreement: 5/5 checklist items_

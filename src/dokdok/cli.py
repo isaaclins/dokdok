@@ -140,12 +140,15 @@ def cmd_doctor(_a):
 
 
 def cmd_types_list(_a):
-    for base in (dt.HOME_TYPES, dt.REPO_TYPES):
+    """User doctypes (in DOKDOK_HOME) with their path; bundled ones without one — they ship with
+    dokdok and are not a place to save new doctypes (`from-docx`/`from-pdf` default to DOKDOK_HOME)."""
+    for base, label in ((dt.HOME_TYPES, None), (dt.REPO_TYPES, "bundled")):
         if base.exists():
             for d in sorted(base.iterdir()):
                 if (d / "doctype.yaml").exists():
                     t = dt.load(str(d))
-                    print(f"  {t.name:24} {t.title}   ({d})")
+                    print(f"  {t.name:24} {t.title}   ({label or d})")
+    print(f"  · your doctypes live in {dt.HOME_TYPES}")
 
 
 def cmd_types_lint(a):
@@ -207,6 +210,8 @@ def cmd_types_lint(a):
 
 def cmd_types_from_docx(a):
     dest = Path(a.dest).resolve() if a.dest else dt.HOME_TYPES
+    if dest == dt.REPO_TYPES.resolve():
+        raise SystemExit(f"{dest} holds dokdok's bundled doctypes — save yours under {dt.HOME_TYPES} (default) or a project folder")
     path, ol = fromdocx.create(Path(a.docx).resolve(), dest, name=a.name, lang=a.lang, style_only=a.style_only)
     print(f"✔ {path}")
     print(f"  {len(ol.sections)} sections from the heading outline, "
@@ -218,6 +223,8 @@ def cmd_types_from_docx(a):
 
 def cmd_types_from_pdf(a):
     dest = Path(a.dest).resolve() if a.dest else dt.HOME_TYPES
+    if dest == dt.REPO_TYPES.resolve():
+        raise SystemExit(f"{dest} holds dokdok's bundled doctypes — save yours under {dt.HOME_TYPES} (default) or a project folder")
     path, look = frompdf.create(Path(a.pdf).resolve(), dest, name=a.name or fromdocx.slug(Path(a.pdf).stem), lang=a.lang)
     print(f"✔ {path}")
     print(f"  logo: {'extracted from page 1 (%dx%d px)' % look.logo_size if look.logo else 'none'} · heading colour #{look.color} · font: {look.font or 'default'}")

@@ -111,7 +111,9 @@ def _filter_audience(md: str, audience: str) -> str:
     """Drop `::: {.only-for="x"}` … `:::` blocks whose audience doesn't match."""
     import re
     def keep(m):
-        return m.group(2) if audience in m.group(1).split(",") else ""
+        # Kept content must restore the blank line that separated the closing `:::`
+        # from whatever follows, or a heading right after it merges into this text.
+        return m.group(2) + "\n" if audience in m.group(1).split(",") else ""
     return re.sub(r':::\s*\{\.only-for="([^"]+)"\}\n(.*?)\n:::\n?', keep, md, flags=re.S)
 
 
