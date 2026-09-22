@@ -38,6 +38,12 @@ of files (guideline PDFs, a Word template, grading grid, their concept).
    to see how a finished one is organised (how many levels, where the appendix goes).
    Without `--style-only`, from-docx also turns the file's outline into sections — use that
    only for a genuinely blank template.
+   **The document you hand over is always produced by dokdok from a doctype** — never a
+   copied or edited version of the reference file, even if that file already looks like the
+   person's own work. Only a dokdok project gives them the checks, the hint boxes that
+   disappear with `--final`, the AI log and a document that can be re-rendered as they
+   write. If the reference really is an earlier version of their own document, say so, and
+   still rebuild it through dokdok.
    No Word file? Start from the closest bundled doctype (`dokdok types list`) and copy it.
    If you must change styles inside `reference.docx` (font sizes, colours), do it the way
    `doctypes/*/make-reference.py` does — Python `zipfile`, rewriting `word/styles.xml` — and
