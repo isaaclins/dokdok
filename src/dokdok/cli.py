@@ -84,6 +84,9 @@ def cmd_doctor(_a):
         found = shutil.which(tool)
         print(f"  {'✔' if found else '✖'} {tool:8} {found or '— ' + why}")
         ok &= bool(found) or tool != "pandoc"
+    lo = Path("/Applications/LibreOffice.app").exists()
+    if lo and not shutil.which("soffice"):
+        print("  ✔ LibreOffice.app found (PDF via LibreOffice)")
     word = Path("/Applications/Microsoft Word.app").exists()
     print(f"  {'✔' if word else '–'} Word     {'PDF via Word (macOS)' if word else 'not found (optional)'}")
     print(f"  · doctypes: {dt.HOME_TYPES}")

@@ -70,8 +70,13 @@ def docx_to_pdf(docx: Path) -> Path:
     soffice = shutil.which("soffice") or next(
         (str(c) for c in [Path("/Applications/LibreOffice.app/Contents/MacOS/soffice")] if c.exists()), None)
     if soffice:
-        subprocess.run([soffice, "--headless", "--convert-to", "pdf", "--outdir", str(docx.parent), str(docx)],
-                       check=True, capture_output=True, timeout=180)
+        cmd = [soffice, "-env:UserInstallation=file:///tmp/dokdok-lo", "--headless",
+               "--convert-to", "pdf", "--outdir", str(docx.parent), str(docx)]
+        try:
+            subprocess.run(cmd, check=True, capture_output=True, timeout=180)
+        except subprocess.TimeoutExpired:
+            raise SystemExit("LibreOffice hung. On macOS, open LibreOffice once by hand after installing "
+                             "(Gatekeeper first-launch check), then retry.")
         return pdf
     if platform.system() == "Darwin" and Path("/Applications/Microsoft Word.app").exists():
         script = f'''
