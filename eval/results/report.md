@@ -9,8 +9,8 @@
 | codex-b | codex/default | ✓ | ✓ | ✓ | ✓ | ✓ | 26 | 657 | — |
 | opus-a | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 26 | 400 | — |
 | opus-b | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 38 | 499 | — |
-| sonnet-a | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 15 | 644 | — |
-| sonnet-b | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 15 | 513 | — |
+| sonnet-a | claude/sonnet | ✓ | ✓ | ✗ | ✓ | ✓ | 15 | 644 | Timo Frei×1 |
+| sonnet-b | claude/sonnet | ✓ | ✓ | ✗ | ✓ | ✓ | 15 | 513 | Barcode×1 |
 
 _codex/default pair agreement: 5/5 checklist items_
 
@@ -22,18 +22,23 @@ _claude/sonnet pair agreement: 5/5 checklist items_
 
 | run | engine/model | produced | style | clean | docx ok | hints | pages | secs | leaks |
 |---|---|---|---|---|---|---|---|---|---|
-| codex-a | codex/default | ✓ | ✓ | ✓ | ✓ | ✓ | 23 | 542 | — |
+| codex-a | codex/default | ✓ | ✓ | ✗ | ✓ | ✓ | 23 | 542 | Brunnhofer×2 |
 | codex-b | codex/default | ✓ | ✓ | ✓ | ✓ | ✓ | 24 | 831 | — |
 | opus-a | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 20 | 684 | — |
 | opus-b | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 19 | 585 | — |
-| sonnet-a | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 14 | 411 | — |
+| sonnet-a | ?/? | ✗ | ✗ | ✓ | ✗ | ✗ | 0 | None | — |
 | sonnet-b | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 13 | 1109 | — |
 
-_codex/default pair agreement: 5/5 checklist items_
+_codex/default pair agreement: 4/5 checklist items_
 
 _claude/opus pair agreement: 5/5 checklist items_
 
-_claude/sonnet pair agreement: 5/5 checklist items_
+## 2-nadia-pentest-pdfonly
+
+| run | engine/model | produced | style | clean | docx ok | hints | pages | secs | leaks |
+|---|---|---|---|---|---|---|---|---|---|
+| opus-a | claude/opus | ✗ | ✗ | ✓ | ✗ | ✗ | 0 | 842 | — |
+| sonnet-a | claude/sonnet | ✓ | ✗ | ✓ | ✓ | ✓ | 14 | 654 | — |
 
 ## 3-ben-thesis
 
@@ -60,14 +65,21 @@ _claude/sonnet pair agreement: 4/5 checklist items_
 | codex-b | codex/default | ✓ | ✓ | ✓ | ✓ | ✓ | 3 | 161 | — |
 | opus-a | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 3 | 211 | — |
 | opus-b | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 3 | 200 | — |
-| sonnet-a | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 3 | 135 | — |
-| sonnet-b | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 3 | 154 | — |
+| sonnet-a | claude/sonnet | ✓ | ✗ | ✓ | ✓ | ✓ | 2 | 69 | — |
+| sonnet-b | claude/sonnet | ✓ | ✗ | ✓ | ✓ | ✓ | 2 | 74 | — |
 
 _codex/default pair agreement: 5/5 checklist items_
 
 _claude/opus pair agreement: 5/5 checklist items_
 
 _claude/sonnet pair agreement: 5/5 checklist items_
+
+## 4-lia-lernbericht-pdfonly
+
+| run | engine/model | produced | style | clean | docx ok | hints | pages | secs | leaks |
+|---|---|---|---|---|---|---|---|---|---|
+| opus-a | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 2 | 587 | — |
+| sonnet-a | claude/sonnet | ✓ | ✗ | ✓ | ✓ | ✓ | 2 | 242 | — |
 
 ## 5-samir-antrag
 
@@ -77,11 +89,11 @@ _claude/sonnet pair agreement: 5/5 checklist items_
 | codex-b | codex/default | ✓ | ✓ | ✓ | ✓ | ✓ | 8 | 371 | — |
 | opus-a | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 6 | 369 | — |
 | opus-b | claude/opus | ✓ | ✓ | ✓ | ✓ | ✓ | 7 | 405 | — |
-| sonnet-a | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 12 | 275 | — |
-| sonnet-b | claude/sonnet | ✓ | ✓ | ✓ | ✓ | ✓ | 11 | 317 | — |
+| sonnet-a | ?/? | ✗ | ✗ | ✓ | ✗ | ✗ | 0 | None | — |
+| sonnet-b | ?/? | ✗ | ✗ | ✓ | ✗ | ✗ | 0 | None | — |
 
 _codex/default pair agreement: 5/5 checklist items_
 
 _claude/opus pair agreement: 5/5 checklist items_
 
-_claude/sonnet pair agreement: 5/5 checklist items_
+_?/? pair agreement: 5/5 checklist items_

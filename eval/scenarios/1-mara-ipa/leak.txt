@@ -1,1 +1,7 @@
-Timo Frei\nT. Frei\nBarcode\nBarcode-Scanner\nHoneywell\nVoyager\nSpring Boot\n
+Timo Frei
+T. Frei
+Barcode
+Barcode-Scanner
+Honeywell
+Voyager
+Spring Boot

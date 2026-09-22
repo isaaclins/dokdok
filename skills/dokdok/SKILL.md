@@ -41,6 +41,10 @@ of files (guideline PDFs, a Word template, grading grid, their concept).
    document — an example full of another person's text is normal, not suspicious. The chapter
    structure comes from the guideline and from the person's own concept; use the example only
    to see how a finished one is organised (how many levels, where the appendix goes).
+   Don't *mention* the reference or its owner in the document either — no "based on X's
+   report", no disclaimers naming them. A client report that names another client, or a thesis
+   that names another student, is a confidentiality problem even when nothing was copied. The
+   AI log may say "layout taken from a sample document" without names.
    Without `--style-only`, from-docx also turns the file's outline into sections — use that
    only for a genuinely blank template.
    **Only a PDF?** `dokdok types from-pdf <file.pdf> --name …` pulls the logo, colours, font and
