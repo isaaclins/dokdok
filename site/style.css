@@ -1,0 +1,25 @@
+:root { --fg: #1a1a1a; --muted: #5c5c5c; --bg: #fbfaf7; --line: #e4e1da; --accent: #0d5c3a; }
+* { box-sizing: border-box; }
+html { font: 17px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; color: var(--fg); background: var(--bg); }
+body { margin: 0; }
+main { max-width: 42rem; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
+header { margin-bottom: 3.5rem; }
+.brand { font-weight: 600; letter-spacing: .02em; color: var(--accent); margin: 0 0 1.5rem; }
+h1 { font-size: 2.3rem; line-height: 1.15; margin: 0 0 1rem; letter-spacing: -.02em; }
+h2 { font-size: 1.35rem; margin: 3rem 0 1rem; letter-spacing: -.01em; }
+h3 { font-size: 1.05rem; margin: 1.75rem 0 .4rem; }
+h3 span { display: inline-block; width: 1.6rem; height: 1.6rem; line-height: 1.6rem; text-align: center; border-radius: 50%; background: var(--fg); color: var(--bg); font-size: .85rem; margin-right: .5rem; }
+.lead { font-size: 1.15rem; color: var(--muted); margin: 0; }
+p { margin: 0 0 .9rem; }
+code { font: .92em ui-monospace, SFMono-Regular, Menlo, monospace; }
+pre { position: relative; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: .9rem 4.5rem .9rem 1rem; white-space: pre-wrap; word-break: break-word; margin: .75rem 0 0; }
+pre button { position: absolute; top: .5rem; right: .5rem; font: inherit; font-size: .8rem; padding: .2rem .55rem; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); cursor: pointer; }
+pre button:hover { border-color: var(--fg); }
+figure { margin: 1.25rem 0 0; }
+figure img { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 6px; }
+figcaption { font-size: .88rem; color: var(--muted); margin-top: .45rem; }
+ul.who { padding-left: 1.1rem; }
+ul.who li { margin-bottom: .6rem; }
+a { color: var(--accent); }
+footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--line); font-size: .88rem; color: var(--muted); }
+@media (max-width: 480px) { h1 { font-size: 1.85rem; } html { font-size: 16px; } }

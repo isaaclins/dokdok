@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dokdok — write the document, skip the formatting fight</title>
+<meta name="description" content="dokdok gives your AI agent the rules of your school or company document and turns what it writes into a real Word file.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+
+<header>
+  <p class="brand">dokdok</p>
+  <h1>Write the document.<br>Skip the formatting fight.</h1>
+  <p class="lead">Your school or company wants a thesis, a report, a final project — in Word, in their format, with their chapters. dokdok gives your AI agent those rules and turns what it writes into a real <code>.docx</code>.</p>
+</header>
+
+<section id="how">
+  <h2>How it works</h2>
+
+  <div class="step">
+    <h3><span>1</span> Paste one line into your agent</h3>
+    <p>Claude Code, Codex, pi — any of them. This installs dokdok and teaches the agent how to use it.</p>
+    <pre><code id="install">Install dokdok: read https://raw.githubusercontent.com/isaaclins/dokdok/main/install.md and follow it.</code><button data-copy="install">copy</button></pre>
+  </div>
+
+  <div class="step">
+    <h3><span>2</span> Give it your material, say what you need</h3>
+    <p>“I have to write my thesis. Here's the guideline from school, my concept and the interview questions.” The agent picks the right document type, builds the chapter skeleton and fills in what it can from your files.</p>
+    <figure><img src="img/chat.png" alt="A chat with an agent: the user drops in their files and asks for help with their thesis; the agent answers with what it filled in and what's still missing."><figcaption>What Jonas sees. No terminal.</figcaption></figure>
+  </div>
+
+  <div class="step">
+    <h3><span>3</span> Get a Word file that follows the rules</h3>
+    <p>Chapters in the right order, headings numbered, sources listed, the school's logo in the header. Before it says “done”, the agent runs a check against the rules — missing chapters, figures without a source, a citation that doesn't exist — and fixes them.</p>
+    <figure><img src="img/check.png" alt="dokdok check output: per file, green ticks and red crosses with plain-language messages."><figcaption>The check. Written for the agent, readable by you.</figcaption></figure>
+    <figure><img src="img/docx.png" alt="First pages of the rendered Word document: title, table of contents, numbered chapters."><figcaption>The result. Open it in Word — it's yours.</figcaption></figure>
+  </div>
+</section>
+
+<section id="who">
+  <h2>Who it's for</h2>
+  <ul class="who">
+    <li><strong>Jonas, 19, painter apprentice.</strong> School handed him a Word template and a 40-page guideline for his thesis. He isn't technical. He chats.</li>
+    <li><strong>Mara, apprentice developer.</strong> Her final project report has mandatory chapters, a daily journal and an AI declaration. She uses the CLI directly and wires it into CI.</li>
+    <li><strong>Nadia, red-team lead.</strong> Same findings, two reports: one for executives, one for the blue team. One project, two targets.</li>
+  </ul>
+</section>
+
+<section id="template">
+  <h2>Already have a template you like?</h2>
+  <p>Hand the Word file to your agent: <em>“make a document type out of this.”</em> dokdok keeps the styles, header, footer and logo, turns the heading outline into chapters and the grey placeholder text into hints. Anyone can reuse it.</p>
+</section>
+
+<section id="what">
+  <h2>What it is, in one breath</h2>
+  <p>A small command-line tool. Markdown in, Word/PDF out, via pandoc. A <em>document type</em> is a folder: chapter structure, a styled <code>reference.docx</code>, rules for the agent, checks. Nothing runs in the cloud; your files stay on your machine.</p>
+  <p><a href="https://github.com/isaaclins/dokdok">Source on GitHub</a></p>
+</section>
+
+<footer>
+  <p>dokdok · MIT</p>
+</footer>
+
+</main>
+<script>
+for (const b of document.querySelectorAll("button[data-copy]")) {
+  b.onclick = () => navigator.clipboard.writeText(document.getElementById(b.dataset.copy).textContent)
+    .then(() => { b.textContent = "copied"; setTimeout(() => b.textContent = "copy", 1500); });
+}
+</script>
+</body>
+</html>
