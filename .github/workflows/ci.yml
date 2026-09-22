@@ -9,3 +9,11 @@ jobs:
       - run: sudo apt-get install -y -qq pandoc libreoffice-writer libreoffice-script-provider-python librsvg2-bin
       - run: uv sync --group dev
       - run: uv run pytest -q
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: choco install pandoc --no-progress -y
+      - run: uv sync --group dev
+      - run: uv run pytest -q

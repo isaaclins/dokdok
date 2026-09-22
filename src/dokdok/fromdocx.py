@@ -141,8 +141,8 @@ def create(docx: Path, dest: Path, name: str | None = None, lang: str = "de-CH")
            "checks": ["every_citation_resolves", "every_source_cited", "every_figure_has_caption",
                       "no_placeholders_in_final"],
            "targets": {"default": {"format": "docx"}}}
-    (dest / "doctype.yaml").write_text(yaml.safe_dump(doc, allow_unicode=True, sort_keys=False, width=100))
+    (dest / "doctype.yaml").write_text(yaml.safe_dump(doc, allow_unicode=True, sort_keys=False, width=100), encoding="utf-8")
     (dest / "AGENTS.md").write_text(
         f"# {docx.stem}\n\nDoctype generated from `{docx.name}`. Fill in the writing rules:\n\n"
-        "- language, tone, citation format\n- what must never be invented\n- what \"done\" means for this document\n")
+        "- language, tone, citation format\n- what must never be invented\n- what \"done\" means for this document\n", encoding="utf-8")
     return dest, ol

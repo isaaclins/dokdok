@@ -26,13 +26,13 @@ section: findings
 
 
 def test_exec_and_blue_team_differ(tmp_path):
-    run = lambda *a, cwd: subprocess.run([sys.executable, "-m", "dokdok.cli", *a], cwd=cwd, text=True, capture_output=True)
+    run = lambda *a, cwd: subprocess.run([sys.executable, "-m", "dokdok.cli", *a], cwd=cwd, text=True, encoding="utf-8", capture_output=True)
     assert run("new", "pt", "--type", str(REPO / "doctypes" / "pentest-report"), cwd=tmp_path).returncode == 0
     p = tmp_path / "pt"
-    (p / "doc" / "03-findings.md").write_text(FINDING)
+    (p / "doc" / "03-findings.md").write_text(FINDING, encoding="utf-8")
     for t in ("exec", "blue-team"):
         assert run("render", t, cwd=p).returncode == 0
-    exec_md = (p / "out" / "pt-exec.md").read_text()
-    blue_md = (p / "out" / "pt-blue-team.md").read_text()
+    exec_md = (p / "out" / "pt-exec.md").read_text(encoding="utf-8")
+    blue_md = (p / "out" / "pt-blue-team.md").read_text(encoding="utf-8")
     assert "Impact." in exec_md and "Remediation." not in exec_md and "# Remediation plan" not in exec_md
     assert "Remediation." in blue_md and "# Remediation plan" in blue_md and "# Appendix" in blue_md

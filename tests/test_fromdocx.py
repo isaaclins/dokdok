@@ -15,7 +15,7 @@ pytestmark = pytest.mark.skipif(not shutil.which("pandoc"), reason="pandoc not i
 def sample_docx(tmp_path):
     md = "# Einleitung\n\n## Ziel\n\n*[Hier das Ziel beschreiben]*\n\n# Hauptteil\n\nText.\n\n| a | b |\n|---|---|\n| 1 | 2 |\n"
     out = tmp_path / "sample.docx"
-    subprocess.run(["pandoc", "-f", "markdown", "-o", str(out)], input=md, text=True, check=True)
+    subprocess.run(["pandoc", "-f", "markdown", "-o", str(out)], input=md, text=True, encoding="utf-8", check=True)
     return out
 
 
@@ -37,5 +37,5 @@ def test_create_doctype_renders(sample_docx, tmp_path):
     assert b"Hier das Ziel" not in body
     assert (b"<w:sectPr" in body) == had_sect
     r = subprocess.run(["pandoc", "-f", "markdown", "-o", str(tmp_path / "x.docx"),
-                        "--reference-doc", str(dest / "reference.docx")], input="# Hi\n\ntext", text=True)
+                        "--reference-doc", str(dest / "reference.docx")], input="# Hi\n\ntext", text=True, encoding="utf-8")
     assert r.returncode == 0

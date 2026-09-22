@@ -56,7 +56,7 @@ def resolve(ref: str) -> Path:
 
 def load(ref: str) -> Doctype:
     path = resolve(ref)
-    d = yaml.safe_load((path / "doctype.yaml").read_text()) or {}
+    d = yaml.safe_load((path / "doctype.yaml").read_text(encoding="utf-8")) or {}
     sections = [Section(**s) for s in d.get("sections", [])]
     return Doctype(
         path=path,

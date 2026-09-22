@@ -32,21 +32,21 @@ def cmd_new(a):
     (root / "doc").mkdir(parents=True)
     ref = str(doc.path) if Path(a.type).exists() else doc.name
     cfg = {"doctype": ref, "title": a.title or root.name, "author": a.author or ""}
-    (root / "dokdok.yaml").write_text(yaml.safe_dump(cfg, allow_unicode=True, sort_keys=False))
-    (root / "sources.yaml").write_text("references: []\n")
+    (root / "dokdok.yaml").write_text(yaml.safe_dump(cfg, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    (root / "sources.yaml").write_text("references: []\n", encoding="utf-8")
     tpl_dir = doc.path / "sections"
     for i, s in enumerate(doc.sections, 1):
         if s.generated:
             continue
         tpl = tpl_dir / f"{s.id}.md"
-        body = tpl.read_text() if tpl.exists() else "".join(f"## {sub}\n\n" for sub in s.subsections)
+        body = tpl.read_text(encoding="utf-8") if tpl.exists() else "".join(f"## {sub}\n\n" for sub in s.subsections)
         hint = f"<!-- dokdok:hint\n{s.hint.strip()}\n-->\n\n" if s.hint else ""
-        (root / "doc" / f"{i:02d}-{s.id}.md").write_text(f"---\nsection: {s.id}\n---\n\n{hint}{body}")
-    agents = (doc.path / "AGENTS.md").read_text() if (doc.path / "AGENTS.md").exists() else f"# {doc.title}\n"
-    (root / "AGENTS.md").write_text(agents.rstrip() + "\n" + MECHANICAL_RULES)
+        (root / "doc" / f"{i:02d}-{s.id}.md").write_text(f"---\nsection: {s.id}\n---\n\n{hint}{body}", encoding="utf-8")
+    agents = (doc.path / "AGENTS.md").read_text(encoding="utf-8") if (doc.path / "AGENTS.md").exists() else f"# {doc.title}\n"
+    (root / "AGENTS.md").write_text(agents.rstrip() + "\n" + MECHANICAL_RULES, encoding="utf-8")
     if (doc.path / "skills").exists():
         shutil.copytree(doc.path / "skills", root / ".claude" / "skills", dirs_exist_ok=True)
-    (root / ".gitignore").write_text("out/\n")
+    (root / ".gitignore").write_text("out/\n", encoding="utf-8")
     print(f"✔ {root.relative_to(Path.cwd()) if root.is_relative_to(Path.cwd()) else root}  ({doc.title})")
     print(f"  {len([s for s in doc.sections if not s.generated])} sections in doc/, rules in AGENTS.md")
 
@@ -91,9 +91,9 @@ def cmd_doctor(_a):
         found = shutil.which(tool)
         print(f"  {'✔' if found else '✖'} {tool:8} {found or '— ' + why}")
         ok &= bool(found) or tool != "pandoc"
-    lo = Path("/Applications/LibreOffice.app").exists()
+    lo = rnd._soffice()
     if lo and not shutil.which("soffice"):
-        print("  ✔ LibreOffice.app found (PDF via LibreOffice)")
+        print(f"  ✔ LibreOffice found at {lo} (PDF via LibreOffice)")
     word = Path("/Applications/Microsoft Word.app").exists()
     print(f"  {'✔' if word else '–'} Word     {'PDF via Word (macOS)' if word else 'not found (optional)'}")
     print(f"  · doctypes: {dt.HOME_TYPES}")
@@ -138,6 +138,9 @@ def cmd_types_from_docx(a):
 
 
 def main(argv=None):
+    for stream in (sys.stdout, sys.stderr):        # ✔ ✖ ⚠ on a cp1252 Windows console
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser(prog="dokdok")
     ap.add_argument("--version", action="version", version=__version__)
     sub = ap.add_subparsers(dest="cmd", required=True)

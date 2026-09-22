@@ -54,7 +54,7 @@ def render(p: Project, target: str = "default", pdf: bool = False) -> list[Path]
     name = p.config.get("filename") or f"{p.root.name}{'' if target == 'default' else '-' + target}"
     out = out_dir / f"{name}.{fmt}"
     md = assemble(p, target)
-    (out_dir / f"{name}.md").write_text(md)   # kept for debugging
+    (out_dir / f"{name}.md").write_text(md, encoding="utf-8")   # kept for debugging
     cmd = ["pandoc", "-f", "markdown", "-o", str(out), "--toc", "--resource-path", str(p.root)]
     if p.doctype.number_sections:
         cmd.append("--number-sections")
@@ -66,7 +66,7 @@ def render(p: Project, target: str = "default", pdf: bool = False) -> list[Path]
         cmd += ["--reference-doc", str(p.doctype.reference_docx)]
     for lua in sorted((p.doctype.path / "filters").glob("*.lua")):
         cmd += ["--lua-filter", str(lua)]
-    subprocess.run(cmd, input=md, text=True, check=True)
+    subprocess.run(cmd, input=md, text=True, encoding="utf-8", check=True)
     outs = [out]
     if pdf and fmt == "docx":
         outs.append(docx_to_pdf(out))
@@ -77,8 +77,11 @@ LO_PROFILE = Path(tempfile.gettempdir()) / "dokdok-lo"
 
 
 def _soffice() -> str | None:
-    return shutil.which("soffice") or next(
-        (str(c) for c in [Path("/Applications/LibreOffice.app/Contents/MacOS/soffice")] if c.exists()), None)
+    candidates = [Path("/Applications/LibreOffice.app/Contents/MacOS/soffice")]
+    for pf in (os.environ.get("ProgramFiles"), os.environ.get("ProgramFiles(x86)")):
+        if pf:
+            candidates.append(Path(pf) / "LibreOffice" / "program" / "soffice.exe")
+    return shutil.which("soffice") or next((str(c) for c in candidates if c.exists()), None)
 
 
 def docx_to_pdf(docx: Path) -> Path:
@@ -106,7 +109,7 @@ def docx_to_pdf(docx: Path) -> Path:
                              "(Gatekeeper first-launch dialog), then retry.")
         if not pdf.exists():
             log = pdf.with_suffix(".pdf.log")
-            detail = log.read_text() if log.exists() else (r.stderr or r.stdout)
+            detail = log.read_text(encoding="utf-8") if log.exists() else (r.stderr or r.stdout)
             raise SystemExit("LibreOffice did not produce a PDF. On Debian/Ubuntu install "
                              "libreoffice-script-provider-python.\n" + detail.strip())
         pdf.with_suffix(".pdf.log").unlink(missing_ok=True)

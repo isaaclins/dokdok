@@ -12,14 +12,14 @@ HEADERS = {"de": ("Datum", "KI-Tool", "Zweck", "Umgang mit dem Ergebnis"),
 
 def append(root: Path, tool: str, purpose: str, outcome: str = "") -> None:
     f = root / FILE
-    entries = yaml.safe_load(f.read_text()) or [] if f.exists() else []
+    entries = yaml.safe_load(f.read_text(encoding="utf-8")) or [] if f.exists() else []
     entries.append({"date": date.today().isoformat(), "tool": tool, "purpose": purpose, "outcome": outcome})
-    f.write_text(yaml.safe_dump(entries, allow_unicode=True, sort_keys=False))
+    f.write_text(yaml.safe_dump(entries, allow_unicode=True, sort_keys=False), encoding="utf-8")
 
 
 def table(root: Path, lang: str) -> str:
     f = root / FILE
-    entries = yaml.safe_load(f.read_text()) or [] if f.exists() else []
+    entries = yaml.safe_load(f.read_text(encoding="utf-8")) or [] if f.exists() else []
     h = HEADERS.get(lang[:2], HEADERS["en"])
     rows = [f"| {h[0]} | {h[1]} | {h[2]} | {h[3]} |", "|---|---|---|---|"]
     for e in entries:

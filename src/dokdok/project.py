@@ -36,7 +36,7 @@ class Project:
     def sources(self) -> list[dict]:
         if not self.sources_path.exists():
             return []
-        d = yaml.safe_load(self.sources_path.read_text()) or {}
+        d = yaml.safe_load(self.sources_path.read_text(encoding="utf-8")) or {}
         return d.get("references", []) if isinstance(d, dict) else d
 
     def section(self, sid: str) -> SectionFile | None:
@@ -53,7 +53,7 @@ def find_root(start: Path | None = None) -> Path:
 
 def load(start: Path | None = None) -> Project:
     root = find_root(start)
-    cfg = yaml.safe_load((root / "dokdok.yaml").read_text()) or {}
+    cfg = yaml.safe_load((root / "dokdok.yaml").read_text(encoding="utf-8")) or {}
     ref = cfg.get("doctype")
     if not ref:
         raise SystemExit("dokdok.yaml has no `doctype:`")
@@ -62,7 +62,7 @@ def load(start: Path | None = None) -> Project:
     doc = dt.load(ref)
     sections = []
     for f in sorted((root / "doc").glob("*.md")):
-        raw = f.read_text()
+        raw = f.read_text(encoding="utf-8")
         m = FRONT.match(raw)
         meta = yaml.safe_load(m.group(1)) if m else {}
         body = raw[m.end():] if m else raw
