@@ -8,6 +8,9 @@ You are installing dokdok for the user. Do each step, read errors, adapt.
    - `uv tool install git+https://github.com/isaaclins/dokdok` (preferred), or
    - `pipx install git+https://github.com/isaaclins/dokdok`.
    Install pandoc if missing (`brew install pandoc` / distro package).
+   For PDF output install LibreOffice (`brew install --cask libreoffice`; Debian/Ubuntu:
+   `libreoffice-writer libreoffice-script-provider-python`). On macOS open LibreOffice once
+   by hand after installing so Gatekeeper stops blocking headless runs.
    `dokdok doctor` must show ✔ for pandoc.
 3. Install the skill for *your* agent:
    - Claude Code → `claude plugin marketplace add isaaclins/dokdok && claude plugin install dokdok@dokdok`
