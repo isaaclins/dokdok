@@ -30,6 +30,9 @@ Or let your agent do it — paste this into Claude Code, Codex or pi:
     ├─ filters/         optional pandoc lua filters
     └─ skills/          optional agent skills shipped with the type
 
+Bundled: `school-thesis` (German vocational-school thesis) and `pentest-report`
+(two targets: `exec` and `blue-team` from the same findings).
+
 Make one from a Word file you like: `dokdok types from-docx file.docx`.
 Install one: `dokdok add <folder-or-git-url>`.
 

@@ -3,7 +3,8 @@
 Structured documents, written by agents, that come out as real Word/PDF files
 in the format a school, a company or a client demands.
 
-Status: design only. Nothing here is built yet.
+Status: v0.1 exists — CLI, two example doctypes, agent skill, website. This document is
+the intent; the README is the current state.
 
 ## The problem
 
