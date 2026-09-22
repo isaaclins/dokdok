@@ -149,6 +149,7 @@ dokdok render blue-team   # out/&lt;name&gt;-blue-team.docx</code></pre>
 
 <section id="pdf">
   <h2>PDF</h2>
+  <p>The docx contains a live table of contents. Word asks “update the fields in this document?” when you open it — click <strong>Yes</strong> and the entries and page numbers appear.</p>
   <p><code>dokdok render --pdf</code> converts the docx with LibreOffice, updating the table of contents and page numbers first. On macOS, open LibreOffice once after installing so Gatekeeper stops blocking headless runs. Without LibreOffice, Word is used on macOS if it's installed and the screen is unlocked.</p>
 </section>
 
