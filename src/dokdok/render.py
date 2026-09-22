@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import tempfile
 
+from . import ailog
 from .project import Project
 
 
@@ -21,6 +22,9 @@ def assemble(p: Project, target: str = "default") -> str:
             continue
         if spec.generated == "sources":
             parts.append(f"# {spec.title}\n\n::: {{#refs}}\n:::\n\n")
+            continue
+        if spec.generated == "ai-log":
+            parts.append(f"# {spec.title}\n\n{ailog.table(p.root, p.doctype.lang)}\n")
             continue
         sf = p.section(spec.id)
         if sf is None:

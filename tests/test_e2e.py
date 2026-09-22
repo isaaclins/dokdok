@@ -68,3 +68,11 @@ def test_toc_title_follows_lang(project):
     from dokdok import project as prj, render
     md = render.assemble(prj.load(project))
     assert "toc-title: 'Inhaltsverzeichnis'" in md
+
+
+def test_ai_log_renders(project):
+    r = dokdok("log", "--tool", "Claude Code", "Einleitung aus Konzept", "--outcome", "gegengelesen", cwd=project)
+    assert r.returncode == 0, r.stderr
+    from dokdok import project as prj, render
+    md = render.assemble(prj.load(project))
+    assert "# KI-Protokoll" in md and "| Claude Code | Einleitung aus Konzept | gegengelesen |" in md

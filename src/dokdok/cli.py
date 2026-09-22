@@ -7,7 +7,7 @@ from pathlib import Path
 
 import yaml
 
-from . import __version__, check as checkmod, doctype as dt, fromdocx, project as prj, render as rnd
+from . import __version__, ailog, check as checkmod, doctype as dt, fromdocx, project as prj, render as rnd
 
 MECHANICAL_RULES = """
 ## dokdok (mechanical rules — generated, do not edit)
@@ -18,6 +18,7 @@ MECHANICAL_RULES = """
 - Cite with `[@id]`; every id must exist in `sources.yaml` (CSL YAML under `references:`).
 - Figures: `![Caption](path)` — caption is mandatory. Tables: pipe tables with a `Table: caption` line.
 - Audience-specific content: `::: {.only-for="blue-team"}` … `:::`.
+- Every session in which you wrote or substantially rewrote text: `dokdok log --tool "<agent name>" "<what>" --outcome "<what the user did with it>"`. Required by most schools; it renders into the AI-usage section automatically.
 - Before saying you are done: run `dokdok check` (and `dokdok check --final` before submission) and fix every ✖.
 - Render with `dokdok render` → `out/`. Never edit files in `out/`.
 """
@@ -74,6 +75,12 @@ def cmd_render(a):
     p = prj.load()
     for out in rnd.render(p, target=a.target, pdf=a.pdf):
         print(f"✔ {out.relative_to(p.root)}")
+
+
+def cmd_log(a):
+    root = prj.find_root()
+    ailog.append(root, a.tool, a.purpose, a.outcome or "")
+    print(f"✔ {ailog.FILE}: {a.tool} — {a.purpose}")
 
 
 def cmd_doctor(_a):
@@ -152,6 +159,10 @@ def main(argv=None):
     s.add_argument("target", nargs="?", default="default")
     s.add_argument("--pdf", action="store_true", help="also convert docx → pdf")
     s.set_defaults(fn=cmd_render)
+
+    s = sub.add_parser("log", help="record an AI-usage entry (rendered by a `generated: ai-log` section)")
+    s.add_argument("purpose"); s.add_argument("--tool", required=True); s.add_argument("--outcome")
+    s.set_defaults(fn=cmd_log)
 
     s = sub.add_parser("doctor", help="check the toolchain"); s.set_defaults(fn=cmd_doctor)
 

@@ -32,8 +32,11 @@ sections:
   - id: anhang
     title: Anhang
     required: true
-    subsections: [Eigenständigkeitserklärung, KI-Protokoll]
+    subsections: [Eigenständigkeitserklärung]
     hint: Pflicht laut Leitfaden. Bei fehlender Erklärung gibt es Punktabzug.
+  - id: ki-protokoll
+    title: KI-Protokoll
+    generated: ai-log
 
 checks:
   - every_citation_resolves

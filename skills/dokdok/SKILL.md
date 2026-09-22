@@ -18,8 +18,10 @@ a red/green check so you know when the document is actually complete.
    and fill `doc/*.md`. Add sources to `sources.yaml` (CSL YAML). Delete hints
    once a section is written. Leave `[visible placeholders]` for things only
    the user can supply — never invent them.
-5. `dokdok check` → fix every ✖, then `dokdok render` (add `--pdf` if wanted).
-6. Tell the user what is in `out/` and what still needs *them* (placeholders).
+5. `dokdok log --tool "<your name>" "<what you wrote>" --outcome "<what the user does with it>"` —
+   once per working session. Schools require this record; it renders automatically.
+6. `dokdok check` → fix every ✖, then `dokdok render` (add `--pdf` if wanted).
+7. Tell the user what is in `out/` and what still needs *them* (placeholders).
 
 Before a submission: `dokdok check --final`.
 
