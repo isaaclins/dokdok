@@ -25,7 +25,7 @@ else
 fi
 echo "exit=$? engine=$ENGINE model=$MODEL seconds=$(( $(date +%s) - start ))" >> "$OUT/antwort.txt"
 # collect
-find "$W" -path '*/out/*.docx' -not -name '.*' | while IFS= read -r f; do
+find "$W" -name '*.docx' -not -name '.*' -not -name 'reference.docx' -not -path '*/doctypes/*' -newer "$W/schule" | while IFS= read -r f; do
   cp "$f" "$OUT/"; DOKDOK_HOME="$W/home" "$REPO/.venv/bin/python" -c "from pathlib import Path;from dokdok.render import docx_to_pdf;docx_to_pdf(Path('$OUT/$(basename "$f")'))" 2>>"$OUT/antwort.txt" || true
 done
 find "$W" -name doctype.yaml | head -1 | while IFS= read -r f; do
