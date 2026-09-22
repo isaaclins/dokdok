@@ -78,3 +78,14 @@ def test_ai_log_renders(project):
     from dokdok import project as prj, render
     md = render.assemble(prj.load(project))
     assert "# KI-Protokoll" in md and "| Claude Code | Einleitung aus Konzept | gegengelesen |" in md
+
+
+@pytest.mark.skipif(not (shutil.which("soffice") or Path("/Applications/LibreOffice.app").exists()), reason="LibreOffice not installed")
+def test_render_pdf_has_toc(project):
+    r = dokdok("render", "--pdf", cwd=project)
+    assert r.returncode == 0, r.stderr
+    pdf = project / "out" / "thesis.pdf"
+    assert pdf.exists() and pdf.stat().st_size > 10_000
+    if shutil.which("pdftotext"):
+        txt = subprocess.run(["pdftotext", str(pdf), "-"], capture_output=True, text=True).stdout
+        assert "Inhaltsverzeichnis" in txt and "1.1 Themenwahl" in txt   # TOC entries were generated

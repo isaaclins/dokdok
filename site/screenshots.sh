@@ -19,8 +19,13 @@ PY
 qlmanage -t -s 1400 -o "$TMP" "$TMP/check.html" >/dev/null 2>&1 && mv "$TMP/check.html.png" "$OUT/check.png"
 
 # 2. the document — first page of the rendered example
-(cd examples/thesis && dokdok render >/dev/null)
-qlmanage -t -s 1400 -o "$TMP" examples/thesis/out/thesis.docx >/dev/null 2>&1 && mv "$TMP/thesis.docx.png" "$OUT/docx.png"
+# real PDF rendering via LibreOffice when available, QuickLook's docx preview otherwise
+if (cd examples/thesis && dokdok render --pdf >/dev/null 2>&1) && command -v pdftoppm >/dev/null; then
+  pdftoppm -png -r 110 -f 1 -l 1 examples/thesis/out/thesis.pdf "$TMP/docx" && mv "$TMP"/docx-*.png "$OUT/docx.png"
+else
+  (cd examples/thesis && dokdok render >/dev/null)
+  qlmanage -t -s 1400 -o "$TMP" examples/thesis/out/thesis.docx >/dev/null 2>&1 && mv "$TMP/thesis.docx.png" "$OUT/docx.png"
+fi
 
 # 3. the chat — an illustration of the conversation (not a recording)
 cat > "$TMP/chat.html" <<'HTML'

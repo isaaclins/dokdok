@@ -1,5 +1,6 @@
 """Assemble the sections into one markdown document and hand it to pandoc."""
 from pathlib import Path
+import os
 import platform
 import shutil
 import subprocess
@@ -72,19 +73,34 @@ def render(p: Project, target: str = "default", pdf: bool = False) -> list[Path]
     return outs
 
 
-def docx_to_pdf(docx: Path) -> Path:
-    """LibreOffice headless first (works unattended, in CI, on Linux); Word on macOS as a fallback."""
-    pdf = docx.with_suffix(".pdf")
-    soffice = shutil.which("soffice") or next(
+LO_PROFILE = Path(tempfile.gettempdir()) / "dokdok-lo"
+
+
+def _soffice() -> str | None:
+    return shutil.which("soffice") or next(
         (str(c) for c in [Path("/Applications/LibreOffice.app/Contents/MacOS/soffice")] if c.exists()), None)
+
+
+def docx_to_pdf(docx: Path) -> Path:
+    """LibreOffice headless first (works unattended, in CI, on Linux); Word on macOS as a fallback.
+    A script run inside LibreOffice updates the TOC and fields before export — plain
+    `--convert-to pdf` would leave pandoc's TOC field empty."""
+    pdf = docx.with_suffix(".pdf")
+    soffice = _soffice()
     if soffice:
-        cmd = [soffice, "-env:UserInstallation=file:///tmp/dokdok-lo", "--headless",
-               "--convert-to", "pdf", "--outdir", str(docx.parent), str(docx)]
+        scripts = LO_PROFILE / "user" / "Scripts" / "python"
+        scripts.mkdir(parents=True, exist_ok=True)
+        shutil.copy(Path(__file__).with_name("lo_export.py"), scripts / "dokdok.py")
+        cmd = [soffice, f"-env:UserInstallation={LO_PROFILE.as_uri()}", "--headless", "--norestore",
+               "vnd.sun.star.script:dokdok.py$export_pdf?language=Python&location=user"]
+        env = {**os.environ, "DOKDOK_IN": str(docx), "DOKDOK_OUT": str(pdf)}
         try:
-            subprocess.run(cmd, check=True, capture_output=True, timeout=180)
+            subprocess.run(cmd, check=True, capture_output=True, timeout=180, env=env)
         except subprocess.TimeoutExpired:
             raise SystemExit("LibreOffice hung. On macOS, open LibreOffice once by hand after installing "
-                             "(Gatekeeper first-launch check), then retry.")
+                             "(Gatekeeper first-launch dialog), then retry.")
+        if not pdf.exists():
+            raise SystemExit("LibreOffice did not produce a PDF")
         return pdf
     if platform.system() == "Darwin" and Path("/Applications/Microsoft Word.app").exists():
         script = f'''
