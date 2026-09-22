@@ -93,8 +93,11 @@ def docx_to_pdf(docx: Path) -> Path:
         shutil.copy(Path(__file__).with_name("lo_export.py"), scripts / "dokdok.py")
         cmd = [soffice, f"-env:UserInstallation={LO_PROFILE.as_uri()}", "--headless", "--norestore",
                "vnd.sun.star.script:dokdok.py$export_pdf?language=Python&location=user"]
-        # LibreOffice embeds its own Python; a venv's PYTHON*/VIRTUAL_ENV would poison it
+        # LibreOffice embeds a Python interpreter that resolves `python3` via PATH; a venv's bin
+        # dir there (or PYTHON*/VIRTUAL_ENV vars) makes it fail to initialise and soffice aborts.
         env = {k: v for k, v in os.environ.items() if not k.startswith(("PYTHON", "VIRTUAL_ENV", "UV_"))}
+        env["PATH"] = os.pathsep.join(d for d in env.get("PATH", "").split(os.pathsep)
+                                      if not (Path(d).parent / "pyvenv.cfg").exists())
         env.update(DOKDOK_IN=str(docx), DOKDOK_OUT=str(pdf))
         try:
             r = subprocess.run(cmd, capture_output=True, text=True, timeout=180, env=env)
