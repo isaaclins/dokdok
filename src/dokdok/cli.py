@@ -1,5 +1,6 @@
 """dokdok — new / add / check / render / doctor / types."""
 import argparse
+import re
 import shutil
 import subprocess
 import sys
@@ -48,9 +49,15 @@ def cmd_new(a):
         hint = f"<!-- dokdok:hint\n{s.hint.strip()}\n-->\n\n" if s.hint else ""
         (root / "doc" / f"{i:02d}-{s.id}.md").write_text(f"---\nsection: {s.id}\n---\n\n{hint}{body}", encoding="utf-8")
     agents = (doc.path / "AGENTS.md").read_text(encoding="utf-8") if (doc.path / "AGENTS.md").exists() else f"# {doc.title}\n"
-    (root / "AGENTS.md").write_text(agents.rstrip() + "\n" + MECHANICAL_RULES, encoding="utf-8")
+    skills = ""
     if (doc.path / "skills").exists():
         shutil.copytree(doc.path / "skills", root / ".claude" / "skills", dirs_exist_ok=True)
+        lines = []
+        for sk in sorted((doc.path / "skills").glob("*/SKILL.md")):
+            m = re.search(r"^description:\s*(.+)$", sk.read_text(encoding="utf-8"), re.M)
+            lines.append(f"- `.claude/skills/{sk.parent.name}/SKILL.md` — {m.group(1).strip() if m else ''}")
+        skills = "\n## Skills shipped with this doctype\n\nRead the file before using one; they are plain instructions.\n\n" + "\n".join(lines) + "\n"
+    (root / "AGENTS.md").write_text(agents.rstrip() + "\n" + skills + MECHANICAL_RULES, encoding="utf-8")
     (root / ".gitignore").write_text("out/\n", encoding="utf-8")
     print(f"✔ {root.relative_to(Path.cwd()) if root.is_relative_to(Path.cwd()) else root}  ({doc.title})")
     print(f"  {len([s for s in doc.sections if not s.generated])} sections in doc/, rules in AGENTS.md")

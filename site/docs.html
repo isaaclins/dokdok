@@ -156,6 +156,7 @@ dokdok render blue-team   # out/&lt;name&gt;-blue-team.docx</code></pre>
   <h2>How agents know about dokdok</h2>
   <p>Two layers. A global <strong>skill</strong> (<code>skills/dokdok/SKILL.md</code> in the repo) tells the agent when to reach for dokdok — the repo is a Claude Code plugin and a pi package, Codex users copy the folder. Inside a project, the generated <strong><code>AGENTS.md</code></strong> carries the doctype's rules, so any agent works there without the skill.</p>
   <p>Agents are asked to run <code>dokdok check</code> before claiming they're done and to record their sessions with <code>dokdok log</code>.</p>
+  <p>A doctype can ship <strong>skills</strong> — step-by-step instructions for a job the agent does with the person, like interviewing a student for their introduction or writing the day's journal entry. <code>dokdok new</code> copies them into the project and lists them in <code>AGENTS.md</code>.</p>
 </section>
 
 <section id="pdf">

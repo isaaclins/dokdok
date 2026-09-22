@@ -27,7 +27,10 @@ def test_new_creates_skeleton(project):
     names = sorted(p.name for p in (project / "doc").iterdir())
     assert names == ["01-introduction.md", "02-main-part.md", "03-conclusion.md", "05-appendix.md"]
     assert "dokdok:hint" in (project / "doc" / "01-introduction.md").read_text(encoding="utf-8")
-    assert "dokdok check" in (project / "AGENTS.md").read_text(encoding="utf-8")
+    agents = (project / "AGENTS.md").read_text(encoding="utf-8")
+    assert "dokdok check" in agents
+    assert (project / ".claude" / "skills" / "interview" / "SKILL.md").exists()
+    assert ".claude/skills/interview/SKILL.md" in agents          # listed for agents that don't read .claude/
 
 
 def test_check_finds_errors(project):
