@@ -24,9 +24,12 @@
   <p>Let an agent do it — paste this into Claude Code, Codex or pi:</p>
   <pre><code>Install dokdok: read https://raw.githubusercontent.com/isaaclins/dokdok/main/install.md and follow it.</code></pre>
   <p>By hand:</p>
-  <pre><code>uv tool install git+https://github.com/isaaclins/dokdok   # or: pipx install …
-brew install pandoc                                          # required
-brew install --cask libreoffice                              # for PDF; open it once on macOS
+  <pre><code># the CLI (or: pipx install git+…)
+uv tool install git+https://github.com/isaaclins/dokdok
+# required
+brew install pandoc
+# for PDF — open it once on macOS after installing
+brew install --cask libreoffice
 dokdok doctor</code></pre>
 </section>
 
