@@ -6,15 +6,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
-      - run: sudo apt-get install -y -qq pandoc libreoffice-writer libreoffice-script-provider-python
+      - run: sudo apt-get install -y -qq pandoc libreoffice-writer libreoffice-script-provider-python librsvg2-bin
       - run: uv sync --group dev
-      - name: libreoffice smoke
-        run: |
-          soffice --version
-          (cd examples/thesis && uv run dokdok render)
-          D=$PWD/examples/thesis/out/thesis.docx
-          soffice --headless --convert-to pdf --outdir /tmp $D; ls -la /tmp/thesis.pdf || echo "plain convert FAILED"
-          mkdir -p /tmp/lo/user/Scripts/python && cp src/dokdok/lo_export.py /tmp/lo/user/Scripts/python/dokdok.py
-          DOKDOK_IN=$D DOKDOK_OUT=/tmp/t2.pdf soffice -env:UserInstallation=file:///tmp/lo --headless --norestore 'vnd.sun.star.script:dokdok.py$export_pdf?language=Python&location=user' || echo "script exit $?"
-          ls -la /tmp/t2.pdf 2>&1; cat /tmp/t2.pdf.log 2>/dev/null || true
       - run: uv run pytest -q

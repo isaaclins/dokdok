@@ -93,7 +93,9 @@ def docx_to_pdf(docx: Path) -> Path:
         shutil.copy(Path(__file__).with_name("lo_export.py"), scripts / "dokdok.py")
         cmd = [soffice, f"-env:UserInstallation={LO_PROFILE.as_uri()}", "--headless", "--norestore",
                "vnd.sun.star.script:dokdok.py$export_pdf?language=Python&location=user"]
-        env = {**os.environ, "DOKDOK_IN": str(docx), "DOKDOK_OUT": str(pdf)}
+        # LibreOffice embeds its own Python; a venv's PYTHON*/VIRTUAL_ENV would poison it
+        env = {k: v for k, v in os.environ.items() if not k.startswith(("PYTHON", "VIRTUAL_ENV", "UV_"))}
+        env.update(DOKDOK_IN=str(docx), DOKDOK_OUT=str(pdf))
         try:
             r = subprocess.run(cmd, capture_output=True, text=True, timeout=180, env=env)
         except subprocess.TimeoutExpired:
