@@ -1,0 +1,46 @@
+# Example doctype: a vocational-school thesis (fictional guideline).
+name: school-thesis
+title: School thesis (example)
+lang: de-CH
+spelling:
+  no_eszett: true
+
+sections:
+  - id: einleitung
+    title: Einleitung
+    required: true
+    words: { min: 300, max: 450 }
+    subsections: [Themenwahl und persönlicher Bezug, Ziel und Fragestellungen, Vorgehen und Methoden]
+    hint: |
+      Ganz am Schluss fertig schreiben. Bewertet: persönlicher Bezug, klar formulierte
+      Fragestellung, mindestens zwei Methoden. 300–450 Wörter.
+  - id: hauptteil
+    title: Hauptteil
+    required: true
+    words: { min: 2000 }
+    hint: |
+      Ein Unterkapitel (##) pro Fragestellung. Jede Aussage aus der Recherche braucht einen
+      Quellenverweis [@id]. Wörtliche Zitate in «…», maximal ein Sechstel der Arbeit.
+  - id: schlusswort
+    title: Schlusswort
+    required: true
+    subsections: [Beantwortung der Fragestellungen, Persönliches Fazit]
+    hint: Jede Fragestellung in wenigen Sätzen beantworten, dann ein persönliches Fazit.
+  - id: quellen
+    title: Quellenverzeichnis
+    generated: sources
+  - id: anhang
+    title: Anhang
+    required: true
+    subsections: [Eigenständigkeitserklärung, KI-Protokoll]
+    hint: Pflicht laut Leitfaden. Bei fehlender Erklärung gibt es Punktabzug.
+
+checks:
+  - every_citation_resolves
+  - every_source_cited
+  - every_figure_has_caption
+  - no_placeholders_in_final
+
+targets:
+  default: { format: docx }
+  web: { format: html }
