@@ -4,19 +4,7 @@
 set -e
 OUT=site/img; TMP=$(mktemp -d); mkdir -p "$OUT"
 
-# 1. the check — on a copy of the example with two deliberate mistakes, so red shows
-cp -r examples/thesis "$TMP/thesis"
-printf '\n![](img/cluster.svg)\n\nMites are the main cause [@missing].\n' >> "$TMP/thesis/doc/02-main-part.md"
-CHECK=$(cd "$TMP/thesis" && dokdok check || true)
-python3 - "$CHECK" "$TMP/check.html" <<'PY'
-import html, sys
-out = html.escape(sys.argv[1]).replace("✔", '<b class="ok">✔</b>').replace("✖", '<b class="err">✖</b>').replace("⚠", '<b class="warn">⚠</b>')
-open(sys.argv[2], "w").write(f'''<html><head><meta charset="utf-8"><style>
-body{{margin:0;background:#1d1f21;padding:28px 32px}} pre{{margin:0;font:15px/1.5 Menlo,monospace;color:#e6e6e6;white-space:pre-wrap}}
-.ok{{color:#5fbf7a}} .err{{color:#ff6b6b}} .warn{{color:#e9c46a}} .p{{color:#8a8f98}}</style></head>
-<body><pre><span class="p">$</span> dokdok check\n{out}</pre></body></html>''')
-PY
-qlmanage -t -s 1400 -o "$TMP" "$TMP/check.html" >/dev/null 2>&1 && mv "$TMP/check.html.png" "$OUT/check.png"
+# 1. the terminal recording: see record.sh (asciinema + agg)
 
 # 2. the document — first page of the rendered example
 # real PDF rendering via LibreOffice when available, QuickLook's docx preview otherwise
@@ -47,7 +35,7 @@ Want to look at the Word file first, or continue with the interview questions?</
 HTML
 qlmanage -t -s 1400 -o "$TMP" "$TMP/chat.html" >/dev/null 2>&1 && mv "$TMP/chat.html.png" "$OUT/chat.png"
 # trim the empty space QuickLook leaves below the content
-uv run --quiet --with pillow python3 - "$OUT"/check.png "$OUT"/chat.png "$OUT"/docx.png <<'PY'
+uv run --quiet --with pillow python3 - "$OUT"/chat.png "$OUT"/docx.png <<'PY'
 import sys
 from PIL import Image, ImageChops
 for f in sys.argv[1:]:
