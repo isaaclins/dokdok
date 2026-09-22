@@ -30,9 +30,12 @@ def test_outline_and_hints(sample_docx):
 def test_create_doctype_renders(sample_docx, tmp_path):
     dest, _ = fromdocx.create(sample_docx, tmp_path / "types", name="t")
     assert (dest / "reference.docx").exists() and (dest / "doctype.yaml").exists()
+    with zipfile.ZipFile(sample_docx) as z:
+        had_sect = b"<w:sectPr" in z.read("word/document.xml")   # older pandoc writes none
     with zipfile.ZipFile(dest / "reference.docx") as z:
         body = z.read("word/document.xml")
-    assert b"Hier das Ziel" not in body and b"<w:sectPr" in body
+    assert b"Hier das Ziel" not in body
+    assert (b"<w:sectPr" in body) == had_sect
     r = subprocess.run(["pandoc", "-f", "markdown", "-o", str(tmp_path / "x.docx"),
                         "--reference-doc", str(dest / "reference.docx")], input="# Hi\n\ntext", text=True)
     assert r.returncode == 0
