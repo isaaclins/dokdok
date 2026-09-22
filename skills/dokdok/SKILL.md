@@ -1,46 +1,65 @@
 ---
 name: dokdok
-description: Write structured documents that must follow a required format — school theses, apprenticeship final reports, pentest/engagement reports, anything where someone hands over a template, guideline or grading grid — and deliver them as real Word/PDF files. Use when a user needs to write such a document, has a Word template they want reproduced, or asks to check a document against its rules.
+description: Structured documents that must follow a required format, delivered as real Word/PDF files — school theses and templates (Vertiefungsarbeit / VA, Maturaarbeit, IPA, Abschlussarbeit, Facharbeit, Projektarbeit, Bachelorarbeit, thesis, final project report), engagement and pentest reports, anything where someone has a guideline (Leitfaden, Bewertungsraster, Vorgaben), a Word template (Vorlage) or grading grid. Use when the user needs to write such a document, wants a template built from their school's or company's Word file or guideline, or asks to check a document against its rules. Triggers in any language, e.g. "VA Vorlage bauen", "Word-Vorlage im Stil meiner Schule", "Arbeit schreiben", "modèle pour mon travail".
 ---
 
 # dokdok
 
-dokdok is a CLI that turns markdown sections + a *doctype* (structure, style,
-rules, tools) into docx/pdf/html. You do the writing; dokdok gives you rails and
-a red/green check so you know when the document is actually complete.
+dokdok is a CLI that turns markdown sections + a *doctype* (structure, style, rules) into
+docx/pdf. You write; dokdok gives you rails and a red/green check. The person you're helping
+is usually **not technical** — a student or a busy professional.
 
-## When the user needs to write a document
+## How to talk
 
-1. `dokdok types list` — is there a doctype for it? If not, see "Creating a doctype".
-2. `dokdok new <folder> --type <doctype> --title "…" --author "…"`
-3. Read the generated `AGENTS.md` and every `<!-- dokdok:hint -->` in `doc/`.
-4. Read whatever material the user gives you (concept, notes, guideline, emails)
-   and fill `doc/*.md`. Add sources to `sources.yaml` (CSL YAML). Delete hints
-   once a section is written. Leave `[visible placeholders]` for things only
-   the user can supply — never invent them.
-5. `dokdok log --tool "<your name>" "<what you wrote>" --outcome "<what the user does with it>"` —
-   once per working session. Schools require this record; it renders automatically.
-6. `dokdok check` → fix every ✖, then `dokdok render` (add `--pdf` if wanted).
-7. Tell the user what is in `out/` and what still needs *them* (placeholders).
+- **Answer in the language the user writes in.** German in, German out.
+- Talk about *the document*: chapters, the template, what's missing. Not about files,
+  commands, YAML, font sizes or "doctypes" — unless the user asks how it works.
+- One question at a time. Never invent content, sources or numbers; leave `[placeholders]`
+  and say what only they can supply.
 
-Before a submission: `dokdok check --final`.
+## Someone needs a document or a template (most common)
 
-## Creating a doctype
+Typical opening: "Ich bin Kaya, bau mir eine VA-Vorlage im Stil meiner Schule" plus a pile
+of files (guideline PDFs, a Word template, grading grid, their concept).
 
-A doctype is a folder: `doctype.yaml` (sections, required subsections, word
-limits, checks, hints), `reference.docx` (styles — edit in Word), `AGENTS.md`
-(writing rules), optional `sections/<id>.md` templates and `filters/*.lua`.
+1. **Read everything they gave you first.** PDFs: `pdftotext file.pdf -` (or your PDF reader).
+   Word files: `pandoc file.docx -t plain`. Note: required chapters and order, word counts,
+   citation format, mandatory declarations, grading points, deadlines, formatting rules.
+2. **Is there a Word file from the school/company?** (template, sample, "Vorlage", or even a
+   filled example.) Then the style comes from it — never build the look by hand:
+   `dokdok types from-docx <file.docx> --name <school-or-course>` keeps its fonts, heading
+   styles, numbering, header, footer and logo, and turns its outline into sections. Read the
+   command's report: it tells you what it could not carry over.
+   No Word file? Start from the closest bundled doctype (`dokdok types list`) and copy it.
+3. **Make the doctype match the guideline**: edit its `doctype.yaml` — sections in the
+   required order, `required`, `subsections`, `words`, a `hint` per section carrying the
+   guideline's demands and grading points; `AGENTS.md` with the writing rules (language,
+   citation style, what must never be invented). Add `generated: sources` / `ai-log` sections
+   if the guideline wants a bibliography / AI declaration.
+4. **Verify before showing anything**: `dokdok types lint <folder>` prints what the
+   reference.docx contains (header/footer, images, heading numbering). If the school template
+   has a logo or numbered headings and lint says otherwise, fix it before continuing.
+   Then `dokdok new <name> --type <folder> --title … --author …`, `cd` in, `dokdok render`,
+   and look at `out/*.docx` (`pandoc out/x.docx -t plain | head -80`) — chapter order and
+   numbering right? TOC present?
+5. Fill what you can from their material (concept → introduction, questions, methods),
+   `dokdok log --tool "<you>" "…" --outcome "…"`, `dokdok check`, fix every ✖.
+6. Hand over: where the Word file is, what you filled in, what is still theirs
+   (the placeholders). Offer the next step (e.g. the `interview` skill if the doctype has it).
 
-- From a guideline PDF / grading grid: read it, write `doctype.yaml` from its
-  required chapters, put grading points into `hint:`s, write AGENTS.md.
-- From a Word file the user likes: copy it to `reference.docx` and delete the
-  body text in Word (keep headers/footers/styles). Use its heading outline for
-  `sections:`.
-- `dokdok types lint <folder>` then `dokdok new smoke --type <folder> && cd smoke && dokdok render`
-  and compare `out/` with the original.
-- Install for reuse: `dokdok add <folder-or-git-url>`.
+## Someone has a project already
 
-## Rules
+`dokdok check` → fix ✖ → write → `dokdok log` → `dokdok render` (add `--pdf` if wanted).
+Before submission: `dokdok check --final`. Never edit `out/`. Never say "done" with a red check.
 
-- Never edit `out/`. Never claim "done" without a clean `dokdok check`.
+## Reference
+
+- Doctype = folder: `doctype.yaml`, `reference.docx`, `AGENTS.md`, `sections/<id>.md`
+  (starting content), `skills/`. Schema: `dokdok types lint` complains about mistakes;
+  field reference in the repo's `doctypes/README.md`.
+- Section files: front matter `section: <id>`, headings from `##`, cite `[@id]` (sources in
+  `sources.yaml`, CSL YAML), figures need captions, tables end with `Table: caption`.
+- Repeat sections (journal): `dokdok entry <id> --date YYYY-MM-DD --title …`.
+- Derived sections: `dokdok inputs <id>` (git only if the project is a repo — ask first;
+  don't assume the user knows git).
 - If `dokdok` is missing, follow `install.md` in the dokdok repo.

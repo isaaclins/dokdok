@@ -13,6 +13,7 @@ from . import __version__, ailog, check as checkmod, derive, doctype as dt, from
 MECHANICAL_RULES = """
 ## dokdok (mechanical rules — generated, do not edit)
 
+- Answer in the language the user writes in. Talk about the document (chapters, what's missing), not about files, commands or YAML, unless asked.
 - One markdown file per section in `doc/`, named `NN-<section-id>.md`, front matter `section: <id>`.
 - Section titles come from the doctype; start your headings at `##`.
 - Repeat sections (e.g. a daily journal) are folders: `doc/<id>/YYYY-MM-DD.md`, one file per entry, created with `dokdok entry <id> --date YYYY-MM-DD`. Inside an entry, start headings at `##`; dokdok nests them under the entry.
@@ -156,6 +157,23 @@ def cmd_types_lint(a):
         probs.append(f"duplicate section ids: {', '.join(sorted(dup))}")
     if not d.reference_docx:
         probs.append("no reference.docx (pandoc default styles will be used)")
+    else:
+        import zipfile, re as _re
+        with zipfile.ZipFile(d.reference_docx) as z:
+            names = z.namelist()
+            hdr = sum(n.startswith("word/header") and n.endswith(".xml") for n in names)
+            ftr = sum(n.startswith("word/footer") and n.endswith(".xml") for n in names)
+            imgs = sum(n.startswith("word/media/") for n in names)
+            styles = z.read("word/styles.xml")
+            fonts = sorted(set(m.decode() for m in _re.findall(rb'w:ascii="([^"]+)"', styles)))[:4]
+            h1 = _re.search(rb'<w:style[^>]*w:styleId="Heading1".*?</w:style>', styles, _re.S)
+            numbered = bool(h1 and b"<w:numPr" in h1.group(0))
+        print(f"  · reference.docx: {hdr} header(s), {ftr} footer(s), {imgs} image(s), fonts {', '.join(fonts) or '?'}, "
+              f"headings numbered by style: {'yes' if numbered else 'no'} (number_sections: {d.number_sections})")
+        if numbered and d.number_sections:
+            probs.append("heading styles number themselves AND number_sections is true → numbers will double; set number_sections: false")
+        if not numbered and not d.number_sections:
+            probs.append("headings are not numbered by style and number_sections is false → no chapter numbers")
     for s in d.sections:
         if not s.generated and s.required and not s.title:
             probs.append(f"section {s.id} has no title")
