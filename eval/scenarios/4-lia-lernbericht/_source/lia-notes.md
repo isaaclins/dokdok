@@ -22,3 +22,6 @@ was gelernt:
 - Pistole nachher sofort reinigen sonst verstopft die Düse
 
 Foto: die Probefläche mit gleichmässigem Farbnebel (2. Versuch war viel besser)
+
+
+meine angaben: Lia Brunner, Malerin EFZ, 2. Lehrjahr, Klasse MA24B, Lehrbetrieb Malerei Hürlimann AG Aarau, Lehrperson Frau S. Keller. Datum vom Spritztag: 15. September 2026

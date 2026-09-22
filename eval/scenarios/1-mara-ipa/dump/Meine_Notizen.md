@@ -61,3 +61,13 @@ Lagerplatz-Format bei uns: `A-01-02` = Gang A, Regal 01, Ebene 02. Gänge A bis 
 - Format vom Lagerplatz immer 3-teilig? gibts Ausnahmen im Aussenlager? checken
 
 todo: KI-Verzeichnis nicht vergessen, der Leitfaden will das zwingend. Ich nutz ja Copilot ab und zu.
+
+
+## Meine Angaben (für die Doku)
+
+- Name: Mara Keller, Informatikerin EFZ Applikationsentwicklung, 4. Lehrjahr
+- Firma: Nordlicht Logistik AG, Industriestrasse 14, 9435 Heerbrugg
+- Berufsbildner / verantwortliche Fachkraft: Reto Bänziger (reto.baenziger@nordlicht-logistik.example)
+- Hauptexperte: Daniel Vogt, Nebenexpertin: Simone Hug
+- Schule: GIBR Rheintal, Klasse IN22a
+- IPA-Zeitraum: 20. April – 1. Mai 2026 (80 Stunden), Abgabe 15. Mai 2026

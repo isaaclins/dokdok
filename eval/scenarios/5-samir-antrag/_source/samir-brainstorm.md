@@ -41,3 +41,14 @@ Ehrlich, für die Jugend in Wettingen gibts wenig. Alle hängen einfach rum. So 
 - Strom für DJ und Anlage – Generator?
 
 Muss das alles noch sauber aufschreiben für die Gemeinde. Der Verein JuGa hilft mir dabei.
+
+
+## Angaben für den Antrag
+
+- Gesuchsteller: Verein JuGa Wettingen (Jugendarbeit Wettingen), Landstrasse 88, 5430 Wettingen
+- Kontaktperson: Samir Haddad, Vorstandsmitglied, samir.haddad@juga-wettingen.example, 079 123 45 67
+- Präsident Verein: Marco Bühler
+- Neues Datum (wegen der 8-Wochen-Frist): Samstag, 28. November 2026, 10–20 Uhr, Skatepark Tägerhardwiese; Verschiebedatum 5. Dezember
+- Erwartete Teilnehmende: ca. 80 Skater/innen im Contest, 200–300 Besucher/innen
+- Deniz Yilmaz (Co-Organisation), Jonas Ackermann (Rampen), DJ Mavo = Mario Voser
+- Gemeindebeitrag: wir beantragen CHF 1'900 (unter der 50%-Grenze) – Budget bitte entsprechend ausgleichen

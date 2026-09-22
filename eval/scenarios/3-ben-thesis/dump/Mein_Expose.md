@@ -44,3 +44,11 @@ Then descriptive stats + maybe a simple regression on the survey, and thematic n
 - Need to decide: TAM or UTAUT? TAM feels simpler, might be enough.
 - Ask supervisor if 2 interviews is enough or if I need 3.
 - Check if I'm allowed to name Coop/Migros or have to anonymize.
+
+
+## My details (for the title page)
+
+- Name: Ben Aeschlimann, matriculation number 21-734-118
+- Programme: BSc Digital Business, Hochschule Rheintal, School of Management
+- Supervisor: Prof. Dr. Andrea Kuster; second examiner: Dr. Lukas Brändle
+- Submission date: 12 June 2026
