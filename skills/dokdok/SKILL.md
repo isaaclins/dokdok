@@ -51,6 +51,7 @@ of files (guideline PDFs, a Word template, grading grid, their concept).
      questions or sources feed it, roughly how long. That's the `sections/<id>.md` file.
    - The `hint` of each section says what the guideline grades there and with how many points.
      Hints render as grey «Hinweis» boxes in the Word file — that's what the person reads.
+     Hints are markdown: put literal examples like `[@id]` or `![caption](file.jpg)` in backticks.
    - Appendix: interview questions from their material, declaration templates, anything the
      guideline says is mandatory. Nothing the guideline mentions may be missing.
    Compare against a filled example if one exists: the template should have every heading the
