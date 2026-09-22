@@ -62,3 +62,9 @@ def test_audience_target(tmp_path):
     md = render._filter_audience(
         'a\n::: {.only-for="blue-team"}\nfix it\n:::\nb\n::: {.only-for="exec"}\nsummary\n:::\n', "exec")
     assert "fix it" not in md and "summary" in md
+
+
+def test_toc_title_follows_lang(project):
+    from dokdok import project as prj, render
+    md = render.assemble(prj.load(project))
+    assert "toc-title: 'Inhaltsverzeichnis'" in md

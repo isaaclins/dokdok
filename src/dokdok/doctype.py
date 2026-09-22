@@ -4,6 +4,7 @@ from pathlib import Path
 import os
 import yaml
 
+TOC_TITLES = {"de": "Inhaltsverzeichnis", "fr": "Table des matières", "it": "Indice", "en": "Table of Contents"}
 HOME_TYPES = Path(os.environ.get("DOKDOK_HOME", Path.home() / ".dokdok")) / "doctypes"
 REPO_TYPES = Path(__file__).resolve().parents[2] / "doctypes"
 
@@ -30,6 +31,8 @@ class Doctype:
     checks: list[str]
     spelling: dict
     targets: dict
+    number_sections: bool
+    toc_title: str
 
     @property
     def reference_docx(self) -> Path | None:
@@ -64,4 +67,6 @@ def load(ref: str) -> Doctype:
         checks=d.get("checks", []),
         spelling=d.get("spelling", {}),
         targets=d.get("targets", {"default": {"format": "docx"}}),
+        number_sections=d.get("number_sections", True),
+        toc_title=d.get("toc_title", TOC_TITLES.get(d.get("lang", "en")[:2], "Table of Contents")),
     )

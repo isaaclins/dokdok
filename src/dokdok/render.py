@@ -13,6 +13,7 @@ def assemble(p: Project, target: str = "default") -> str:
     audience = tcfg.get("audience")
     meta = {k: v for k, v in p.config.items() if k not in ("doctype", "targets")}
     meta.setdefault("lang", p.doctype.lang)
+    meta.setdefault("toc-title", p.doctype.toc_title)
     front = "---\n" + "".join(f"{k}: {v!r}\n" for k, v in meta.items() if isinstance(v, (str, int))) + "---\n\n"
     parts = [front]
     for spec in p.doctype.sections:
@@ -49,8 +50,9 @@ def render(p: Project, target: str = "default", pdf: bool = False) -> list[Path]
     out = out_dir / f"{name}.{fmt}"
     md = assemble(p, target)
     (out_dir / f"{name}.md").write_text(md)   # kept for debugging
-    cmd = ["pandoc", "-f", "markdown", "-o", str(out), "--toc", "--number-sections",
-           "--resource-path", str(p.root)]
+    cmd = ["pandoc", "-f", "markdown", "-o", str(out), "--toc", "--resource-path", str(p.root)]
+    if p.doctype.number_sections:
+        cmd.append("--number-sections")
     if p.sources_path.exists():
         cmd += ["--citeproc", "--bibliography", str(p.sources_path)]
     if fmt == "docx" and p.doctype.reference_docx:

@@ -22,6 +22,7 @@ def q(tag): return f"{{{W}}}{tag}"
 class Outline:
     sections: list[dict] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
+    styles_number_headings: bool = False
 
 
 def _heading_levels(styles_xml: bytes) -> dict[str, int]:
@@ -37,6 +38,15 @@ def _heading_levels(styles_xml: bytes) -> dict[str, int]:
         if m:
             levels[sid] = int(m.group(1))
     return levels
+
+
+def _styles_number_headings(styles_xml: bytes) -> bool:
+    root = ET.fromstring(styles_xml)
+    for st in root.findall("w:style", NS):
+        name = st.find("w:name", NS)
+        if name is not None and re.match(r"(?:heading|überschrift)\s*1", name.get(q("val"), ""), re.I):
+            return st.find("w:pPr/w:numPr", NS) is not None
+    return False
 
 
 def _para_text(p) -> str:
@@ -65,7 +75,9 @@ def slug(s: str) -> str:
 def outline(docx: Path) -> Outline:
     out = Outline()
     with zipfile.ZipFile(docx) as z:
-        levels = _heading_levels(z.read("word/styles.xml"))
+        styles_xml = z.read("word/styles.xml")
+        levels = _heading_levels(styles_xml)
+        out.styles_number_headings = _styles_number_headings(styles_xml)
         body = ET.fromstring(z.read("word/document.xml")).find("w:body", NS)
     cur = None
     tables = len(body.findall("w:tbl", NS))
@@ -124,6 +136,7 @@ def create(docx: Path, dest: Path, name: str | None = None, lang: str = "de-CH")
         sections.append({"id": "quellen", "title": "Quellenverzeichnis", "generated": "sources"})
     doc = {"name": name, "title": f"{docx.stem} (from-docx)", "lang": lang,
            "spelling": {"no_eszett": lang.startswith("de")},
+           "number_sections": not ol.styles_number_headings,
            "sections": sections,
            "checks": ["every_citation_resolves", "every_source_cited", "every_figure_has_caption",
                       "no_placeholders_in_final"],
