@@ -110,7 +110,7 @@ def hollow(src: Path, dst: Path) -> None:
             data = zin.read(item.filename)
             if item.filename == "word/document.xml":
                 head, _, rest = data.partition(b"<w:body>")
-                sect = re.findall(rb"<w:sectPr\b(?:(?!<w:sectPr\b).)*?</w:sectPr>", rest, re.S)
+                sect = re.findall(rb"<w:sectPr\b[^>]*/>|<w:sectPr\b(?:(?!<w:sectPr\b).)*?</w:sectPr>", rest, re.S)
                 last_sect = sect[-1] if sect else b""
                 data = head + b"<w:body><w:p/>" + last_sect + b"</w:body></w:document>"
             zout.writestr(item, data)
