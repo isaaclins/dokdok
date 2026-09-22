@@ -31,6 +31,10 @@ of files (guideline PDFs, a Word template, grading grid, their concept).
    styles, numbering, header, footer and logo, and turns its outline into sections. Read the
    command's report: it tells you what it could not carry over.
    No Word file? Start from the closest bundled doctype (`dokdok types list`) and copy it.
+   If you must change styles inside `reference.docx` (font sizes, colours), do it the way
+   `doctypes/*/make-reference.py` does — Python `zipfile`, rewriting `word/styles.xml` — and
+   **never** unzip/edit/`zip -r` by hand: that adds directory entries and Word then refuses
+   every document rendered from it ("unreadable content").
 3. **Make the doctype match the guideline**: edit its `doctype.yaml` — sections in the
    required order, `required`, `subsections`, `words`, a `hint` per section carrying the
    guideline's demands and grading points; `AGENTS.md` with the writing rules (language,
